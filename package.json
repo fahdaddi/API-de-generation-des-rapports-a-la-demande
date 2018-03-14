@@ -1,0 +1,29 @@
+{
+  "name": "stage-pfe",
+  "version": "1.0.0",
+  "description": "API qui permet de generer des rapports a la demande",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Javascript",
+    "web-serveur",
+    "nodejs",
+    "developpement;",
+    "\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[Dl\u001b[C\u001b[Dl\u001b[C\u001b[C\u001b[D\u001b[Doppement",
+    "inpt",
+    "pfe",
+    "stage",
+    "inwi",
+    "generation-des-rapport",
+    "excel",
+    "mongodb"
+  ],
+  "author": "Fahd ADDI",
+  "license": "ISC",
+  "dependencies":{
+    "express":"*",
+    "mongoose":"*"
+  }
+}
