@@ -1,9 +1,18 @@
 extends ../layout
 
 block content
-  h1 Selectionner le type du rapport
-  select
-	 option(value='Sites_HS') Sites HS
-	 option(value='Secteurs_HS') Secteurs HS
-	 option(value='') Mercedes
-	 option(value='audi') Audi
+  h1 Les données
+  if data
+    each d, i in data
+      if(i!==0)
+        -var last = JSON.stringify(data[i-1]["alarm id"])
+        -var current = JSON.stringify(d["alarm id"])
+      else
+        -var last = 0
+        -var current = JSON.stringify(d["alarm id"])
+      if( last !== current )
+        .jumbotron
+          h4 #{d["alarm id"]}
+          p  #{d["alarm source"]}
+          p
+            | last occured :  #{d["Occurred On (NT)"]}

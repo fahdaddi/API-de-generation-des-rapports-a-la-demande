@@ -4,7 +4,6 @@ const path = require('path');
 const mongoose = require('mongoose');
 
 
-
 const port = 1200;
 const app = express();
 
