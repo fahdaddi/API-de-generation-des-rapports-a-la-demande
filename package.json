@@ -22,8 +22,13 @@
   ],
   "author": "Fahd ADDI",
   "license": "ISC",
-  "dependencies":{
-    "express":"*",
-    "mongoose":"*"
+  "dependencies": {
+    "body-parser": "*",
+    "connect-busboy": "0.0.2",
+    "express": "*",
+    "express-fileupload": "*",
+    "mongoose": "*",
+    "multer": "^1.3.0",
+    "pug": "*"
   }
 }
