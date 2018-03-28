@@ -3,16 +3,19 @@ extends ../layout
 block content
   h1 Les données
   if data
+    -var alarmid = []
+    -var numAlarmId = []
     each d, i in data
-      if(i!==0)
-        -var last = JSON.stringify(data[i-1]["alarm id"])
-        -var current = JSON.stringify(d["alarm id"])
-      else
-        -var last = 0
-        -var current = JSON.stringify(d["alarm id"])
-      if( last !== current )
+      -if(d["alarm id"] !== "" && alarmid.indexOf(d["alarm id"])===-1)
+        - alarmid.push(d["alarm id"])
         .jumbotron
-          h4 #{d["alarm id"]}
-          p  #{d["alarm source"]}
+          h4 Alarm ID : #{d["alarm id"]}
+          each huaw, j in huawei
+            - if(d["alarm source"].substring(0,4) == huaw["site"].substring(0,4) || d["location information"].match(/[A-Z]{3}-\d{4}/) == huaw["site"])
+              p  Ville : #{d["location information"].match(/[A-Z]{3}-\d{4}/)}
+              -break
           p
-            | last occured :  #{d["Occurred On (NT)"]}
+            | last occured :  #{d["last occurred (nt)"]}
+    each alarm, i in alarmid
+      -console.log(alarmid[i])
+    -console.log("done \n")

@@ -4,7 +4,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 
 
-const port = 1200;
+const port = process.env.port || 1200;
 const app = express();
 
 //Body-parser connect-busboy middleware
@@ -35,5 +35,5 @@ app.use('/siteshs',siteshs);
 
 
 app.listen(port,()=>{
-  console.log("le serveur NodeJS a été demaré, sur le port:"+port+", avec succés");
+  console.log("le serveur fonctionne sur le lien http:\\localhost:"+port);
 })
