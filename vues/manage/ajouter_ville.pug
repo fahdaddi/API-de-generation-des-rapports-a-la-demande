@@ -1,0 +1,25 @@
+extends ../layout
+
+block content
+  .bg
+    .container(style="color:white")
+      .empty25
+      a.btn.btn-outline-warning(href="/") Page d'Accueil
+      div.text-center
+        .empty25
+        h1  Nos ville:
+        if villes
+          each ville, vv in villes
+            h6 #{ville}
+        form.form-signin(action='/manage/ajouter_ville', method='post')
+          hr
+          .row
+            .col-1
+              div.vl_left
+            .col-10
+              input.form-control(type='text', name='name_ville', placeholder='nom de la ville')
+              br
+              input.btn.btn-lg.btn-default.btn-block(type='submit',name="submit" , value="ajouter")
+            .col-1
+              div.vl_right
+          hr

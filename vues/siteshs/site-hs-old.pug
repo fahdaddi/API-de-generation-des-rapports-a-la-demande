@@ -1,0 +1,38 @@
+extends ../layout
+
+block content
+  br
+  br
+  a.btn.btn-outline-secondary.form-control(href="#" onclick="HTMLtoPDF()") Save As PDF
+  br
+  hr
+  #HTMLtoPDF
+    -var nbrSecteurs = 0
+    each alarm, a in alarms
+      -var villeVar =  alarm["location information"].match(/[A-Z]{3}-\d{2,4}/i) || alarm["alarm source"]
+      -var villeVar2 =  alarm["location information"].match(/[A-Z]{3}-\d{2,4}_\w+/i) || alarm["location information"].match(/[A-Z]{3}-\d{2,4}-\w+/i)
+      if(villeVar[0])
+        -if(villeVar[0].toString() === site)
+          -nbrSecteurs++
+          h2  #{villeVar2}
+          h4
+            strong  Alarme ID :
+            |   #{alarm['alarm id']}
+          h4
+            strong  Description :
+            |   #{alarm['name']}
+          -var firstOccurredYear=alarm['first occurred (nt)'].substring(6,10),firstOccurredMounth=alarm['first occurred (nt)'].substring(3,5),firstOccurredDay=alarm['first occurred (nt)'].substring(0,2),firstOccurredHour=alarm['first occurred (nt)'].substring(11,13),firstOccurredMin=alarm['first occurred (nt)'].substring(14,16),firstOccurredSec=alarm['first occurred (nt)'].substring(17,19)
+          h4
+            strong Date premier arrivé |
+            |   année : #{firstOccurredYear}, mois : #{firstOccurredMounth}, jour : #{firstOccurredDay}, Heure : #{firstOccurredHour}, Minute : #{firstOccurredMin}, Second : #{firstOccurredSec}
+          -var lastOccurredYear=alarm['last occurred (nt)'].substring(6,10),lastOccurredMounth=alarm['last occurred (nt)'].substring(3,5),lastOccurredDay=alarm['last occurred (nt)'].substring(0,2),lastOccurredHour=alarm['last occurred (nt)'].substring(11,13),lastOccurredMin=alarm['last occurred (nt)'].substring(14,16),lastOccurredSec=alarm['last occurred (nt)'].substring(17,19)
+          h4
+            strong Date dernier arrivé |
+            |   année : #{lastOccurredYear}, mois : #{lastOccurredMounth}, jour : #{lastOccurredDay}, Heure : #{lastOccurredHour}, Minute : #{lastOccurredMin}, Second : #{lastOccurredSec}
+          -if(alarm['cleared on (nt)'] !== "-")
+            -var clearedOnDay = alarm['cleared on (nt)'].substring(0,2), clearedOnMounth = alarm['cleared on (nt)'].substring(3,5), clearedOnYear = alarm['cleared on (nt)'].substring(6,10), clearedOnHour = alarm['cleared on (nt)'].substring(11,13), clearedOnMinute = alarm['cleared on (nt)'].substring(14,16), clearedOnSecond = alarm['cleared on (nt)'].substring(17,19)
+            h6(style="color:green")  cette alarme a été effacée le #{clearedOnDay}/#{clearedOnMounth}/#{clearedOnYear} à #{clearedOnHour}H#{clearedOnMinute}min#{clearedOnSecond}s
+          -else
+            h6(style="color:red")  cette alarme n'a pas été effacée !
+          hr
+    h1.text-center  Le nombres des alarms des secteurs hors service est : #{nbrSecteurs}

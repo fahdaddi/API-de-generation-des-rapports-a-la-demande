@@ -1,0 +1,31 @@
+extends ../layout
+
+block content
+  div.empty100
+  h2.text-center
+    | Site ID :
+    strong.bleu  #{site}
+  hr
+  if alarms
+    .row.text-center
+      .col-5
+        h2  Date début incident
+      .col-2
+        div.vl
+      .col-5
+        h2  Date fin incident
+    hr
+    each alarm, al in alarms
+      -var siteID =  alarm["location information"].match(/[A-Z]{3}-\d{2,4}/i) || alarm["alarm source"]
+      -if(siteID[0])
+        -if(siteID[0] === site)
+          .row.text-center
+            .col-5
+              -var date_debut = alarm["first occurred (nt)"] || alarm["occurred on (nt)"]
+              h6  #{date_debut}
+            .col-2
+              div.vl
+            .col-5
+              -var date_fin = alarm["cleared on (nt)"]
+              h6  #{date_fin}
+          hr

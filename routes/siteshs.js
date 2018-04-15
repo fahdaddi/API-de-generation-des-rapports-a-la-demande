@@ -125,12 +125,20 @@ route.post('/upload',function(req,res,next){
 })
 
 route.get("/site/:siteID",(req,res,next)=>{
-  res.render("siteshs/secteurs-hs",
+  res.render("siteshs/site-hs",
   {
     alarms:results,
     site:req.params.siteID
   })
 });
 
+
+route.get("/secteur/:secteurID",(req,res,next)=>{
+  var secteurID = req.params.secteurID;
+  res.render("siteshs/secteur-hs",{
+    alarms:results,
+    secteur:secteurID
+  })
+});
 
 module.exports = route

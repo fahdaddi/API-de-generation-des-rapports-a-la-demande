@@ -1,0 +1,111 @@
+extends ../layout
+
+
+block content
+  br
+  br
+  a.btn.btn-outline-secondary.form-control(href="#" onclick="HTMLtoPDF()") Save as PDF
+  br
+  br
+  if alarms
+    -var alarmsTraite = [];
+    #HTMLtoPDF
+      -var villes=["Agadir" , "Casablanca" , "Marrakech" , "Meknes" , "Oujda" , "Rabat" , "Tanger"]
+        .jumbotron
+          h2 Agadir
+          br
+          each alarm, a in alarms
+            -var villeVar =  alarm["location information"].match(/[A-Z]{3}-\d{2,4}/i) || alarm["alarm source"]
+            -if(agadir.indexOf(villeVar[0]) !== -1)
+              -if(alarmsTraite.indexOf(villeVar[0]) == -1)
+                -alarmsTraite.push(villeVar[0])
+                -var str = villeVar[0].toString()
+                form.form-signin(action="/siteshs/site/"+str, method='post')
+                  .row
+                    .col-6.form-group
+                      label.text-center Date de début
+                      input.form-control(type='text', name='date_debut', placeholder='jj/mm/aaaa')
+                    .col-6.form-group
+                      label.text-center Date de fin
+                      input.form-control(type='text', name='date_fin', value='jj/mm/aaaa')
+                  h6  alarm id : #{alarm["alarm id"]}
+                  h6  ville : #{villeVar}
+                  input(type="submit", name="submit", value="Secteurs HS du site")
+                  hr
+        .jumbotron
+          h2 Casablanca
+          br
+          each alarm, a in alarms
+            -var villeVar =  alarm["location information"].match(/[A-Z]{3}-\d{2,4}/i) || alarm["alarm source"]
+            -if(casablanca.indexOf(villeVar[0]) !== -1)
+              -if(alarmsTraite.indexOf(villeVar[0]) == -1)
+                -alarmsTraite.push(villeVar[0])
+                -var str = villeVar[0].toString()
+                a(href="/siteshs/site/"+str)
+                  h6  alarm id : #{alarm["alarm id"]}
+                  h6  ville : #{villeVar}
+                  hr
+        .jumbotron
+          h2 Marrakech
+          br
+          each alarm, a in alarms
+            -var villeVar =  alarm["location information"].match(/[A-Z]{3}-\d{2,4}/i) || alarm["alarm source"]
+            -if(marrakech.indexOf(villeVar[0]) !== -1)
+              -if(alarmsTraite.indexOf(villeVar[0]) == -1)
+                -alarmsTraite.push(villeVar[0])
+                -var str = villeVar[0].toString()
+                a(href="/siteshs/site/"+str)
+                  h6  alarm id : #{alarm["alarm id"]}
+                  h6  ville : #{villeVar}
+                  hr
+        .jumbotron
+          h2 Meknes
+          br
+          each alarm, a in alarms
+            -var villeVar =  alarm["location information"].match(/[A-Z]{3}-\d{2,4}/i) || alarm["alarm source"]
+            -if(meknes.indexOf(villeVar[0]) !== -1)
+              -if(alarmsTraite.indexOf(villeVar[0]) == -1)
+                -alarmsTraite.push(villeVar[0])
+                -var str = villeVar[0].toString()
+                a(href="/siteshs/site/"+str)
+                  h6  alarm id : #{alarm["alarm id"]}
+                  h6  ville : #{villeVar}
+                  hr
+        .jumbotron
+          h2 Oujda
+          br
+          each alarm, a in alarms
+            -var villeVar =  alarm["location information"].match(/[A-Z]{3}-\d{2,4}/i) || alarm["alarm source"]
+            -if(oujda.indexOf(villeVar[0]) !== -1)
+              -if(alarmsTraite.indexOf(villeVar[0]) == -1)
+                -alarmsTraite.push(villeVar[0])
+                -var str = villeVar[0].toString()
+                a(href="/siteshs/site/"+str)
+                  h6  alarm id : #{alarm["alarm id"]}
+                  h6  ville : #{villeVar}
+                  hr
+        .jumbotron
+          h2 Rabat
+          br
+          each alarm, a in alarms
+            -var villeVar =  alarm["location information"].match(/[A-Z]{3}-\d{2,4}/i) || alarm["alarm source"]
+            -if(rabat.indexOf(villeVar[0]) !== -1)
+              -if(alarmsTraite.indexOf(villeVar[0]) == -1)
+                -alarmsTraite.push(villeVar[0])
+                -var str = villeVar[0].toString()
+                a(href="/siteshs/site/"+str)
+                  h6  alarm id : #{alarm["alarm id"]}
+                  h6  ville : #{villeVar}
+                  hr
+        .jumbotron
+          h2 Tanger
+          br
+          each alarm, a in alarms
+            -var villeVar =  alarm["location information"].match(/[A-Z,a-z]{3}-\d{4}/i) || alarm["alarm source"]
+            -if(alarmsTraite.indexOf(villeVar[0]) == -1 && villeVar[0] !== undefined)
+              -alarmsTraite.push(villeVar[0])
+              -var str = villeVar[0]
+              a(href="/siteshs/site/"+str)
+                h6  alarm id : #{alarm["alarm id"]}
+                h6  ville : #{villeVar}
+                hr

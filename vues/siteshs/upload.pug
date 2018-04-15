@@ -2,9 +2,15 @@ extends ../layout
 
 block content
   form.form-signin(action='/siteshs/upload', method='post', enctype='multipart/form-data')
-
     div.empty250
-    br
-    input.form-control(type='file', name='file')
-    br
-    button.btn.btn-lg.btn-default.btn-block(type='submit') Envoyer
+    hr
+    .row
+      .col-1
+        div.vl_left
+      .col-10
+        input.form-control(type='file', name='file')
+        br
+        input.btn.btn-lg.btn-default.btn-block(type='submit',name="submit" , value="Envoyer")
+      .col-1
+        div.vl_right
+    hr

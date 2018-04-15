@@ -1,7 +1,18 @@
 extends layout
 
 block content
-  div.empty250
-  .row
-    .col-3
-      a.btn.btn-outline-secondary.form-control(href="/siteshs/upload") Sites HS
+  .bg
+    div.empty250_2
+      div.empty100
+      .container
+        .row
+          .col-2
+          .col-3
+            a.btn.btn-outline-primary.form-control(href="/manage/ajouter_ville") Ajouter une ville
+          .col-2
+          .col-3
+            a.btn.btn-outline-primary.form-control(href="/manage/ajouter_site") Ajouter un site
+    .container
+      .row
+        .col-3
+          a.btn.btn-outline-secondary.form-control(href="/siteshs/upload") Sites HS

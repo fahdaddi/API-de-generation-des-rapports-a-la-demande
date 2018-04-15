@@ -1,3 +1,54 @@
+body, html {
+    height: 100%;
+}
+.bg {
+    /* The image used */
+    background-image: url("/images/b1.jpg");
+
+    /* Full height */
+    height: 100%;
+
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
 .empty250{
-  height: 250px;
+  height: 230px;
+}
+.empty250_2{
+  height: 50%;
+}
+.empty100{
+  height: 100px;
+}
+.empty25{
+  height: 40px;
+}
+.bleu{
+  color : blue;
+}
+.vl {
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+    height: 100%;
+    position: absolute;
+    left: 50%;
+    margin-left: -3px;
+    top: 0;
+}
+.vl_left {
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+    height: 100%;
+    position: absolute;
+    left: 0%;
+    margin-left: -3px;
+    top: 0;
+}
+.vl_right {
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+    height: 100%;
+    position: absolute;
+    left: 100%;
+    margin-left: -3px;
+    top: 0;
 }

@@ -1,0 +1,46 @@
+extends ../layout
+
+block content
+
+  if(alarms)
+    -var secteurHS = []
+    -var nbrSecteurHS = 0
+    each alarm, al in alarms
+      -var secteurID = alarm["location information"].match(/[A-Z]{3}-\d{2,4}_\w+/i) || [null]
+      -if(secteurID[0])
+        -if(secteurID[0]==secteur)
+          -secteurHS.push(alarm)
+          -nbrSecteurHS++
+  div.empty100
+  .row
+    .col-5
+      h2.text-center
+        | Secteur ID :
+        strong.bleu  #{secteur}
+    .col-2
+      div.vl
+    .col-5
+      h3.text-center
+        | Nombre d'alarmes :
+        strong  #{nbrSecteurHS}
+  div.empty25
+  if alarms
+    .row.text-center
+      .col-5
+        h2  Date début incident
+      .col-2
+        div.vl
+      .col-5
+        h2  Date fin incident
+    hr
+    each sec, se in secteurHS
+      .row.text-center
+        .col-5
+          -var date_debut = sec["first occurred (nt)"] || sec["occurred on (nt)"]
+          h6  #{date_debut}
+        .col-2
+          div.vl
+        .col-5
+          -var date_fin = sec["cleared on (nt)"]
+          h6  #{date_fin}
+      hr

@@ -1,104 +1,337 @@
 extends ../layout
 
-
 block content
-  br
-  br
-  a.btn.btn-outline-secondary.form-control(href="#" onclick="HTMLtoPDF()") Save as PDF
-  br
-  br
   if alarms
-    -var alarmsTraite = [];
-    #HTMLtoPDF
-      -var villes=["Agadir" , "Casablanca" , "Marrakech" , "Meknes" , "Oujda" , "Rabat" , "Tanger"]
-        .jumbotron
-          h2 Agadir
-          br
-          each alarm, a in alarms
-            -var villeVar =  alarm["location information"].match(/[A-Z]{3}-\d{2,4}/i) || alarm["alarm source"]
-            -if(agadir.indexOf(villeVar[0]) !== -1)
-              -if(alarmsTraite.indexOf(villeVar[0]) == -1)
-                -alarmsTraite.push(villeVar[0])
-                -var str = villeVar[0].toString()
-                a(href="/siteshs/site/"+str)
-                  h6  alarm id : #{alarm["alarm id"]}
-                  h6  ville : #{villeVar}
-                  hr
-        .jumbotron
-          h2 Casablanca
-          br
-          each alarm, a in alarms
-            -var villeVar =  alarm["location information"].match(/[A-Z]{3}-\d{2,4}/i) || alarm["alarm source"]
-            -if(casablanca.indexOf(villeVar[0]) !== -1)
-              -if(alarmsTraite.indexOf(villeVar[0]) == -1)
-                -alarmsTraite.push(villeVar[0])
-                -var str = villeVar[0].toString()
-                a(href="/siteshs/site/"+str)
-                  h6  alarm id : #{alarm["alarm id"]}
-                  h6  ville : #{villeVar}
-                  hr
-        .jumbotron
-          h2 Marrakech
-          br
-          each alarm, a in alarms
-            -var villeVar =  alarm["location information"].match(/[A-Z]{3}-\d{2,4}/i) || alarm["alarm source"]
-            -if(marrakech.indexOf(villeVar[0]) !== -1)
-              -if(alarmsTraite.indexOf(villeVar[0]) == -1)
-                -alarmsTraite.push(villeVar[0])
-                -var str = villeVar[0].toString()
-                a(href="/siteshs/site/"+str)
-                  h6  alarm id : #{alarm["alarm id"]}
-                  h6  ville : #{villeVar}
-                  hr
-        .jumbotron
-          h2 Meknes
-          br
-          each alarm, a in alarms
-            -var villeVar =  alarm["location information"].match(/[A-Z]{3}-\d{2,4}/i) || alarm["alarm source"]
-            -if(meknes.indexOf(villeVar[0]) !== -1)
-              -if(alarmsTraite.indexOf(villeVar[0]) == -1)
-                -alarmsTraite.push(villeVar[0])
-                -var str = villeVar[0].toString()
-                a(href="/siteshs/site/"+str)
-                  h6  alarm id : #{alarm["alarm id"]}
-                  h6  ville : #{villeVar}
-                  hr
-        .jumbotron
-          h2 Oujda
-          br
-          each alarm, a in alarms
-            -var villeVar =  alarm["location information"].match(/[A-Z]{3}-\d{2,4}/i) || alarm["alarm source"]
-            -if(oujda.indexOf(villeVar[0]) !== -1)
-              -if(alarmsTraite.indexOf(villeVar[0]) == -1)
-                -alarmsTraite.push(villeVar[0])
-                -var str = villeVar[0].toString()
-                a(href="/siteshs/site/"+str)
-                  h6  alarm id : #{alarm["alarm id"]}
-                  h6  ville : #{villeVar}
-                  hr
-        .jumbotron
-          h2 Rabat
-          br
-          each alarm, a in alarms
-            -var villeVar =  alarm["location information"].match(/[A-Z]{3}-\d{2,4}/i) || alarm["alarm source"]
-            -if(rabat.indexOf(villeVar[0]) !== -1)
-              -if(alarmsTraite.indexOf(villeVar[0]) == -1)
-                -alarmsTraite.push(villeVar[0])
-                -var str = villeVar[0].toString()
-                a(href="/siteshs/site/"+str)
-                  h6  alarm id : #{alarm["alarm id"]}
-                  h6  ville : #{villeVar}
-                  hr
-        .jumbotron
-          h2 Tanger
-          br
-          each alarm, a in alarms
-            -var villeVar =  alarm["location information"].match(/[A-Z]{3}-\d{2,4}/i) || alarm["alarm source"]
-            -if(tanger.indexOf(villeVar[0]) !== -1)
-              -if(alarmsTraite.indexOf(villeVar[0]) == -1)
-                -alarmsTraite.push(villeVar[0])
-                -var str = villeVar[0].toString()
-                a(href="/siteshs/site/"+str)
-                  h6  alarm id : #{alarm["alarm id"]}
-                  h6  ville : #{villeVar}
-                  hr
+    -var agadirDone=[],casablancaDone=[],marrakechDone=[],meknesDone=[],oujdaDone=[],rabatDone=[],tangerDone=[]
+    -var nbrsitesagadir=0,nbrsitescasablanca=0,nbrsitesmarrakech=0,nbrsitesmeknes=0,nbrsitesoujda=0,nbrsitesrabat=0,nbrsitestanger=0
+    each alarm, al in alarms
+      -var done = false
+      -var villeVar =  alarm["location information"].match(/[A-Z]{3}-\d{2,4}/i) || alarm["alarm source"]
+      -if(agadir.indexOf(villeVar[0]) !== -1)
+        -if(agadirDone.indexOf(villeVar[0]) == -1)
+          -agadirDone.push(villeVar[0])
+          -nbrsitesagadir++
+          -done = true
+      -if(!done)
+        -if(casablanca.indexOf((villeVar[0] || villeVar)) !== -1)
+          -if(casablancaDone.indexOf(villeVar[0]) == -1)
+            -casablancaDone.push(villeVar[0])
+            -nbrsitescasablanca++
+            -done = true;
+      -if(!done)
+        -if(marrakech.indexOf((villeVar[0] || villeVar)) !== -1)
+          -if(marrakechDone.indexOf(villeVar[0]) == -1)
+            -marrakechDone.push(villeVar[0])
+            -nbrsitesmarrakech++
+            -done = true;
+      -if(!done)
+        -if(meknes.indexOf((villeVar[0] || villeVar)) !== -1)
+          -if(meknesDone.indexOf(villeVar[0]) == -1)
+            -meknesDone.push(villeVar[0])
+            -nbrsitesmeknes++
+            -done = true;
+      -if(!done)
+        -if(oujda.indexOf((villeVar[0] || villeVar)) !== -1)
+          -if(oujdaDone.indexOf(villeVar[0]) == -1)
+            -oujdaDone.push(villeVar[0])
+            -nbrsitesoujda++
+            -done = true;
+      -if(!done)
+        -if(rabat.indexOf((villeVar[0] || villeVar)) !== -1)
+          -if(rabatDone.indexOf(villeVar[0]) == -1)
+            -rabatDone.push(villeVar[0])
+            -nbrsitesrabat++
+            -done = true;
+      -if(!done)
+        -if(tanger.indexOf((villeVar[0] || villeVar)) !== -1)
+          -if(tangerDone.indexOf(villeVar[0]) == -1)
+            -tangerDone.push(villeVar[0])
+            -nbrsitestanger++
+            -done = true;
+    h1.text-center  Sites HS
+    hr
+    .row.text-center
+      .col-1
+        h3  Ville
+      .col-1
+        div.vl
+      .col-1
+        h6  Nombre de sites HS
+      .col-1
+        div.vl
+      .col-8
+        h3  Détail
+    hr
+    .row.text-center
+      .col-1
+        h6  Agadir
+      .col-1
+        div.vl
+      .col-1
+        h3  #{nbrsitesagadir}
+      .col-1
+        div.vl
+      .col-8
+        p
+          each ag, i in agadirDone
+            a(href="/siteshs/site/"+ag , target="_blank",style="display:inline") #{ag}
+            |  -
+    hr
+    .row.text-center
+      .col-1
+        h6  Casablanca
+      .col-1
+        div.vl
+      .col-1
+        h3  #{nbrsitescasablanca}
+      .col-1
+        div.vl
+      .col-8
+        p
+          each ca, i in casablancaDone
+            a(href="/siteshs/site/"+ca , target="_blank",style="display:inline") #{ca}
+            |  -
+    hr
+    .row.text-center
+      .col-1
+        h6  Marrakech
+      .col-1
+        div.vl
+      .col-1
+        h3  #{nbrsitesmarrakech}
+      .col-1
+        div.vl
+      .col-8
+        p
+          each ma, i in marrakechDone
+            a(href="/siteshs/site/"+ma , target="_blank",style="display:inline") #{ma}
+            |  -
+    hr
+    .row.text-center
+      .col-1
+        h6  Meknes
+      .col-1
+        div.vl
+      .col-1
+        h3  #{nbrsitesmeknes}
+      .col-1
+        div.vl
+      .col-8
+        p
+          each me, i in meknesDone
+            a(href="/siteshs/site/"+me , target="_blank",style="display:inline") #{me}
+            |  -
+    hr
+    .row.text-center
+      .col-1
+        h6  Oujda
+      .col-1
+        div.vl
+      .col-1
+        h3  #{nbrsitesoujda}
+      .col-1
+        div.vl
+      .col-8
+        p
+          each ou, i in oujdaDone
+            a(href="/siteshs/site/"+ou , target="_blank",style="display:inline") #{ou}
+            |  -
+    hr
+    .row.text-center
+      .col-1
+        h6  Rabat
+      .col-1
+        div.vl
+      .col-1
+        h3  #{nbrsitesrabat}
+      .col-1
+        div.vl
+      .col-8
+        p
+          each ra, i in rabatDone
+            a(href="/siteshs/site/"+ra , target="_blank",style="display:inline") #{ra}
+            |  -
+    hr
+    .row.text-center
+      .col-1
+        h6  Tanger
+      .col-1
+        div.vl
+      .col-1
+        h3  #{nbrsitestanger}
+      .col-1
+        div.vl
+      .col-8
+        p
+          each ta, i in tangerDone
+            a(href="/siteshs/site/"+ta , target="_blank",style="display:inline") #{ta}
+            |  -
+  if alarms
+    -var secteuragadirDone=[],secteurcasablancaDone=[],secteurmarrakechDone=[],secteurmeknesDone=[],secteuroujdaDone=[],secteurrabatDone=[],secteurtangerDone=[]
+    -var nbrsecteursagadir=0,nbrsecteurscasablanca=0,nbrsecteursmarrakech=0,nbrsecteursmeknes=0,nbrsecteursoujda=0,nbrsecteursrabat=0,nbrsecteurstanger=0
+    each alarm, al in alarms
+      -var done = false
+      -var secteurVar =  alarm["location information"].match(/[A-Z]{3}-\d{2,4}_\w+/i) || [null]
+      -if(secteurVar[0])
+        -var siteID = secteurVar[0].match(/[A-Z]{3}-\d{2,4}/i)
+        -if(agadir.indexOf(siteID[0]) !== -1)
+          -if(secteuragadirDone.indexOf(secteurVar[0]) == -1)
+            -secteuragadirDone.push(secteurVar[0])
+            -nbrsecteursagadir++
+            -done = true
+        -if(!done)
+          -if(casablanca.indexOf((siteID[0])) !== -1)
+            -if(secteurcasablancaDone.indexOf(secteurVar[0]) == -1)
+              -secteurcasablancaDone.push(secteurVar[0])
+              -nbrsecteurscasablanca++
+              -done = true;
+        -if(!done)
+          -if(marrakech.indexOf((siteID[0])) !== -1)
+            -if(secteurmarrakechDone.indexOf(secteurVar[0]) == -1)
+              -secteurmarrakechDone.push(secteurVar[0])
+              -nbrsecteursmarrakech++
+              -done = true;
+        -if(!done)
+          -if(meknes.indexOf((siteID[0])) !== -1)
+            -if(secteurmeknesDone.indexOf(secteurVar[0]) == -1)
+              -secteurmeknesDone.push(secteurVar[0])
+              -nbrsecteursmeknes++
+              -done = true;
+        -if(!done)
+          -if(oujda.indexOf((siteID[0])) !== -1)
+            -if(secteuroujdaDone.indexOf(secteurVar[0]) == -1)
+              -secteuroujdaDone.push(secteurVar[0])
+              -nbrsecteursoujda++
+              -done = true;
+        -if(!done)
+          -if(rabat.indexOf((siteID[0])) !== -1)
+            -if(secteurrabatDone.indexOf(secteurVar[0]) == -1)
+              -secteurrabatDone.push(secteurVar[0])
+              -nbrsecteursrabat++
+              -done = true;
+        -if(!done)
+          -if(tanger.indexOf((siteID[0])) !== -1)
+            -if(secteurtangerDone.indexOf(secteurVar[0]) == -1)
+              -secteurtangerDone.push(secteurVar[0])
+              -nbrsecteurstanger++
+              -done = true;
+    hr
+    div.empty100
+    h1.text-center  Secteurs HS
+    hr
+    .row.text-center
+      .col-1
+        h3  Ville
+      .col-1
+        div.vl
+      .col-1
+        h6  Nombre de Secteurs HS
+      .col-1
+        div.vl
+      .col-8
+        h3  Détail
+    hr
+    .row.text-center
+      .col-1
+        h6  Agadir
+      .col-1
+        div.vl
+      .col-1
+        h3  #{nbrsecteursagadir}
+      .col-1
+        div.vl
+      .col-8
+        p
+          each ag, i in secteuragadirDone
+            a(href="/siteshs/secteur/"+ag , target="_blank",style="display:inline") #{ag}
+            |  -
+    hr
+    .row.text-center
+      .col-1
+        h6  Casablanca
+      .col-1
+        div.vl
+      .col-1
+        h3  #{nbrsecteurscasablanca}
+      .col-1
+        div.vl
+      .col-8
+        p
+          each ca, i in secteurcasablancaDone
+            a(href="/siteshs/secteur/"+ca , target="_blank",style="display:inline") #{ca}
+            |  -
+    hr
+    .row.text-center
+      .col-1
+        h6  Marrakech
+      .col-1
+        div.vl
+      .col-1
+        h3  #{nbrsecteursmarrakech}
+      .col-1
+        div.vl
+      .col-8
+        p
+          each ma, i in secteurmarrakechDone
+            a(href="/siteshs/secteur/"+ma , target="_blank",style="display:inline") #{ma}
+            |  -
+    hr
+    .row.text-center
+      .col-1
+        h6  Meknes
+      .col-1
+        div.vl
+      .col-1
+        h3  #{nbrsecteursmeknes}
+      .col-1
+        div.vl
+      .col-8
+        p
+          each me, i in secteurmeknesDone
+            a(href="/siteshs/secteur/"+me , target="_blank",style="display:inline") #{me}
+            |  -
+    hr
+    .row.text-center
+      .col-1
+        h6  Oujda
+      .col-1
+        div.vl
+      .col-1
+        h3  #{nbrsecteursoujda}
+      .col-1
+        div.vl
+      .col-8
+        p
+          each ou, i in secteuroujdaDone
+            a(href="/siteshs/secteur/"+ou , target="_blank",style="display:inline") #{ou}
+            |  -
+    hr
+    .row.text-center
+      .col-1
+        h6  Rabat
+      .col-1
+        div.vl
+      .col-1
+        h3  #{nbrsecteursrabat}
+      .col-1
+        div.vl
+      .col-8
+        p
+          each ra, i in secteurrabatDone
+            a(href="/siteshs/secteur/"+ra , target="_blank",style="display:inline") #{ra}
+            |  -
+    hr
+    .row.text-center
+      .col-1
+        h6  Tanger
+      .col-1
+        div.vl
+      .col-1
+        h3  #{nbrsecteurstanger}
+      .col-1
+        div.vl
+      .col-8
+        p
+          each ta, i in secteurtangerDone
+            a(href="/siteshs/secteur/"+ta , target="_blank",style="display:inline") #{ta}
+            |  -
