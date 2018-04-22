@@ -1,0 +1,22 @@
+extends ../layout
+
+block content
+  form.form-signin(action='/manage/ajouter_ville', method='post')
+    .empty25
+    .container.text-center
+      if villes
+        each ville, vl in villes
+          h3  #{ville}
+    .container
+      label Nom de la ville :
+    hr
+    .row
+      .col-1
+        div.vl_left
+      .col-10
+        input.form-control(type='text', name='name_ville', placeholder='ex: Marrakech...')
+        br
+        input.btn.btn-lg.btn-default.btn-block(type='submit',name="submit" , value="Ajouter")
+      .col-1
+        div.vl_right
+    hr

@@ -1,73 +1,65 @@
 const route = require('express').Router();
 const fs = require('fs');
-const multer  = require('multer');
-const xlsxtojson = require('xlsx-to-json-lc');
-const xlstojson = require('xls-to-json-lc');
 
 
+var villedessites;
+var file = 'json/villes.json';
+var ville;
 
 
-var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, './json/Classification')
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname)
-  }
-});
-
-var upload = multer({
-  storage: storage,
-  fileFilter : function(req, file, callback) { //file filter
-    if (['xls', 'xlsx'].indexOf(file.originalname.split('.')[file.originalname.split('.').length-1]) === -1) {
-      return callback(new Error('Wrong extension type'));
-    }
-    callback(null, true);
-  }
-}).single("file");
-
-
-route.get("/classification",(req,res,next)=>{
-  res.render("manage/miseajourclassif");
-});
-
-route.post('/classification',function(req,res,next){
-  let exceltojson;
-  upload(req,res,function(err){
-    if(err){
-      res.json({error_code:1,err_desc:err});
-      return;
-    }
-    if(!req.file){
-      res.json({error_code:1,err_desc:"No file passed"});
-      return;
-    }
-    if(req.file.originalname.split('.')[req.file.originalname.split('.').length-1] === 'xlsx'){
-      exceltojson = xlsxtojson;
-    } else {
-      exceltojson = xlstojson;
-    }
-    try {
-      exceltojson({
-        input: req.file.path, //the same path where we uploaded our file
-        output: "./json/Classification/classif.json", //since we don't need output.json
-        lowerCaseHeaders:true
-        }, function(err,result){
-          if(err) {
-            return res.json({error_code:1,err_desc:err, data: null});
-          }
-        results=result;
-        res.redirect("/siteshs/upload");
-        });
-    } catch (e){
-      res.json({error_code:1,err_desc:"Corupted excel file"});
-    }
+route.get('/ajouter_ville',(req,res,next)=>{
+  fs.readFile('json/villes.json',(err,data)=>{
+    if(err) throw err;
+    ville = JSON.parse(data);
   });
-})
+  res.render("manage/ajouter_ville",{
+    villes:ville
+  })
+});
+
+route.post('/ajouter_ville',(req,res,next)=>{
+  var nouvelleVille = req.body.name_ville;
+  nouvelleVille = nouvelleVille[0].toUpperCase() + nouvelleVille.substring(1,ville.length);
+  ville.push(nouvelleVille);
+  fs.writeFile(file,JSON.stringify(ville,null,2),(err)=>{
+    if(err) throw err;
+    console.log(JSON.stringify(ville));
+    console.log('writing to ' + 'json/villes.json');
+  });
+  res.redirect('/manage/ajouter_ville');
+});
+
 
 
 route.get('/ajouter_site',(req,res,next)=>{
-  res.send("manage/ajouter un site")//changes should go here !!
+  fs.readFile('json/villes.json',(err,data)=>{
+    if(err) throw err;
+    ville = JSON.parse(data);
+  });
+  res.render("manage/ajouter_site",{
+    villes:ville
+  });
+});
+
+
+
+route.post('/ajouter_site',(req,res,next)=>{
+  var reqVille = req.body.ville;
+  var nouveauSite = ""+req.body.name_ville;
+  fs.readFile('json/villes/'+reqVille+'.json',(err,data)=>{
+    if(err) console.log(err);
+    data=JSON.parse(data);
+    data.push(nouveauSite);
+    var file = 'json/villes/'+reqVille+'.json';
+    fs.writeFile(file,JSON.stringify(data,null,2),(err)=>{
+      if(err) throw err;
+      console.log(JSON.stringify(data));
+      console.log('writing to ' + file);
+      res.redirect('/manage/ajouter_site');
+    });
+
+  });
+
 });
 
 module.exports = route;
