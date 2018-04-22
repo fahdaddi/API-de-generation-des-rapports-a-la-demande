@@ -1,10 +1,26 @@
 extends ../layout
 
 block content
+  if classification
+    -var classe
+    each cl, i in classification
+      -if(cl["site"]===site)
+        -classe=cl["nouvelle classe"]
+        -break
+
   div.empty100
-  h2.text-center
-    | Site ID :
-    strong.bleu  #{site}
+  .container
+    .row.text-center
+      col-5
+        h2
+          | Site ID :
+          strong.bleu  #{site}
+      .col-2
+        .vl
+      .col-5
+        h2
+          | Classe :
+          strong  #{classe}
   hr
   if alarms
     .row.text-center
@@ -15,17 +31,42 @@ block content
       .col-5
         h2  Date fin incident
     hr
+    -var alarmsID = []
     each alarm, al in alarms
       -var siteID =  alarm["location information"].match(/[A-Z]{3}-\d{2,4}/i) || alarm["alarm source"]
       -if(siteID[0])
         -if(siteID[0] === site)
-          .row.text-center
-            .col-5
-              -var date_debut = alarm["first occurred (nt)"] || alarm["occurred on (nt)"]
-              h6  #{date_debut}
-            .col-2
-              div.vl
-            .col-5
-              -var date_fin = alarm["cleared on (nt)"]
-              h6  #{date_fin}
-          hr
+          -var date_debut = alarm["first occurred (nt)"] || alarm["occurred on (nt)"]
+          -if(alarmsID.indexOf(date_debut) == -1)
+            -alarmsID.push(date_debut)
+            .row.text-center
+              .col-5
+                h6  #{date_debut}
+              .col-2
+                div.vl
+              .col-5
+                -var date_fin = alarm["cleared on (nt)"]
+                h6  #{date_fin}
+              hr
+    each alarm, al in alarm_ericson
+      -var siteID =  alarm["element  specificproblem"].match(/[A-Z]{2}\d{4}/i)
+      -console.log(siteID[0])
+      -var index = nomination_erric_2.indexOf(site)
+      -var siteID2 = nomination_erric[index]
+      -console.log(siteID2)
+      -if(siteID2)
+        -if(siteID[0] === siteID2)
+          -console.log('hahiyaa')
+          -var date_debut = alarm["severity  eventtime  managed"]
+          -console.log("date : " + date_debut)
+          -if(alarmsID.indexOf(date_debut) == -1)
+            -alarmsID.push(date_debut)
+            .row.text-center
+              .col-5
+                h6  #{date_debut}
+              .col-2
+                div.vl
+              .col-5
+                -var date_fin = alarm["cleared on (nt)"] || "--"
+                h6  #{date_fin}
+              hr

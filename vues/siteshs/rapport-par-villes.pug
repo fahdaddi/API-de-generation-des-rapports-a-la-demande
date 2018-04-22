@@ -48,6 +48,57 @@ block content
             -tangerDone.push(villeVar[0])
             -nbrsitestanger++
             -done = true;
+  if alarms_ericson
+    each alarm_ericson, al in alarms_ericson
+      -var done = false
+      -var villeVar =  alarm_ericson["element  specificproblem"].match(/[A-Z]{2}\d{4}/i)
+      -var index = nomination_erric.indexOf(villeVar[0])
+      -var villeVar2 = nomination_erric_2[index]
+      -console.log(villeVar[0]+" : "+villeVar2)
+      -if(agadir.indexOf(villeVar2) !== -1)
+        -if(agadirDone.indexOf(villeVar2) == -1)
+          -agadirDone.push(villeVar2)
+          -nbrsitesagadir++
+          -done = true
+      -if(!done)
+        -if(casablanca.indexOf((villeVar2)) !== -1)
+          -if(casablancaDone.indexOf(villeVar2) == -1)
+            -casablancaDone.push(villeVar2)
+            -nbrsitescasablanca++
+            -done = true;
+      -if(!done)
+        -if(marrakech.indexOf((villeVar2)) !== -1)
+          -if(marrakechDone.indexOf(villeVar2) == -1)
+            -marrakechDone.push(villeVar2)
+            -nbrsitesmarrakech++
+            -done = true;
+      -if(!done)
+        -if(meknes.indexOf((villeVar2)) !== -1)
+          -if(meknesDone.indexOf(villeVar2) == -1)
+            -meknesDone.push(villeVar2)
+            -nbrsitesmeknes++
+            -done = true;
+      -if(!done)
+        -if(oujda.indexOf((villeVar2)) !== -1)
+          -if(oujdaDone.indexOf(villeVar2) == -1)
+            -oujdaDone.push(villeVar2)
+            -nbrsitesoujda++
+            -done = true;
+      -if(!done)
+        -if(rabat.indexOf((villeVar2)) !== -1)
+          -if(rabatDone.indexOf(villeVar2) == -1)
+            -rabatDone.push(villeVar2)
+            -nbrsitesrabat++
+            -done = true;
+      -if(!done)
+        -if(tanger.indexOf((villeVar2)) !== -1)
+          -if(tangerDone.indexOf(villeVar2) == -1)
+            -tangerDone.push(villeVar2)
+            -nbrsitestanger++
+            -done = true;
+
+
+
     h1.text-center  Sites HS
     hr
     .row.text-center
@@ -166,6 +217,11 @@ block content
           each ta, i in tangerDone
             a(href="/siteshs/site/"+ta , target="_blank",style="display:inline") #{ta}
             |  -
+
+
+
+
+
   if alarms
     -var secteuragadirDone=[],secteurcasablancaDone=[],secteurmarrakechDone=[],secteurmeknesDone=[],secteuroujdaDone=[],secteurrabatDone=[],secteurtangerDone=[]
     -var nbrsecteursagadir=0,nbrsecteurscasablanca=0,nbrsecteursmarrakech=0,nbrsecteursmeknes=0,nbrsecteursoujda=0,nbrsecteursrabat=0,nbrsecteurstanger=0
