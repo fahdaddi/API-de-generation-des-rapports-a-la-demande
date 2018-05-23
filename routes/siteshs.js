@@ -17,11 +17,17 @@ var tanger;
 var classif;
 var nomination_erric;
 var nomination_erric_2;
+var adresses
 /*fs.readFile('json/Classification/classif.json','utf-8',(err,data)=>{
   if(err)  console.log("impossible de lire le fichier des classifications :\n"+err);
   classif=data;
 });
 */
+fs.readFile('json/adresse.json','utf-8',(err,data)=>{
+  if(err) console.log("error occured while reading the classif_erric's json file : \n"+err);
+  adresses=JSON.parse(data);
+});
+
 fs.readFile('json/Classification/sites_erric_nomination_erric.json','utf-8',(err,data)=>{
   if(err) console.log("error occured while reading the classif_erric's json file : \n"+err);
   nomination_erric=JSON.parse(data);
@@ -122,7 +128,7 @@ route.post('/upload',function(req,res,next){
           //res.json({error_code:0,err_desc:null, data: result});
         //  res.render("siteshs/type-du-rapport",{
         results=result;
-        res.redirect("/siteshs/upload_ericsson");
+        res.redirect("/siteshs/classification")
       /*  res.render("siteshs/rapport-par-villes",{
             //data:result,
             alarms:result,
@@ -175,7 +181,7 @@ route.post('/upload_ericsson',function(req,res,next){
           //res.json({error_code:0,err_desc:null, data: result});
         //  res.render("siteshs/type-du-rapport",{
         results_ericsson=result;
-        res.redirect("/siteshs/classification")
+        res.redirect("/siteshs/classificationeric")
         });
     } catch (e){
       res.json({error_code:1,err_desc:"Corupted excel file"});
@@ -218,7 +224,6 @@ route.post('/classification',function(req,res,next){
           }
         classif=result;
         res.render("siteshs/rapport-par-villes",{
-            alarms_ericson:results_ericsson,
             alarms:results,
             agadir:agadir,
             casablanca:casablanca,
@@ -228,8 +233,7 @@ route.post('/classification',function(req,res,next){
             rabat:rabat,
             tanger:tanger,
             classification:classif,
-            nomination_erric : nomination_erric,
-            nomination_erric_2 : nomination_erric_2
+            adresses:adresses
           });
         });
     } catch (e){
@@ -239,9 +243,9 @@ route.post('/classification',function(req,res,next){
 })
 
 
+/*
 
-
-route.get("/site/:siteID",(req,res,next)=>{
+route.get("/site/:siteID/:vender",(req,res,next)=>{
   res.render("siteshs/site-hs",
   {
     alarms:results,
@@ -249,7 +253,8 @@ route.get("/site/:siteID",(req,res,next)=>{
     classification:classif,
     nomination_erric : nomination_erric,
     nomination_erric_2 : nomination_erric_2,
-    site:req.params.siteID
+    site:req.params.siteID,
+    vender:req.params.vender
   })
 });
 
@@ -263,5 +268,57 @@ route.get("/secteur/:secteurID",(req,res,next)=>{
     secteur:secteurID
   })
 });
+*/
+
+route.get("/classificationeric",(req,res,next)=>{
+  res.render("manage/miseajourclassiferic");
+});
+route.post('/classificationeric',function(req,res,next){
+  let exceltojson;
+  upload(req,res,function(err){
+    if(err){
+      res.json({error_code:1,err_desc:err});
+      return;
+    }
+    if(!req.file){
+      res.json({error_code:1,err_desc:"No file passed"});
+      return;
+    }
+    if(req.file.originalname.split('.')[req.file.originalname.split('.').length-1] === 'xlsx'){
+      exceltojson = xlsxtojson;
+    } else {
+      exceltojson = xlstojson;
+    }
+    try {
+      exceltojson({
+        input: req.file.path, //the same path where we uploaded our file
+        output: "./json/Classification/classif.json", //since we don't need output.json
+        lowerCaseHeaders:true
+        }, function(err,result){
+          if(err) {
+            return res.json({error_code:1,err_desc:err, data: null});
+          }
+        classif=result;
+        res.render("siteshs/rapport-par-villes-eric",{
+            alarms_ericson:results_ericsson,
+            agadir:agadir,
+            casablanca:casablanca,
+            marrakech:marrakech,
+            meknes:meknes,
+            oujda:oujda,
+            rabat:rabat,
+            tanger:tanger,
+            classification:classif,
+            nomination_erric : nomination_erric,
+            nomination_erric_2 : nomination_erric_2,
+            adresses : adresses
+          });
+        });
+    } catch (e){
+      res.json({error_code:1,err_desc:"Corupted excel file"});
+    }
+  });
+})
+
 
 module.exports = route

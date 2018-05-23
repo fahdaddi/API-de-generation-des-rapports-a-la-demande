@@ -1,0 +1,371 @@
+extends ../layout
+
+block content
+
+  h1  this is the beginning
+  -console.log('---------\n test jdid \n---------')
+  -var nbrsitesA=0,nbrsitesB=0,nbrsitesC=0,nbrsitesD=0;
+  -var agadirDone=[],casablancaDone=[],marrakechDone=[],meknesDone=[],oujdaDone=[],rabatDone=[],tangerDone=[]
+  -var agadirSite=[],casablancaSite=[],marrakechSite=[],meknesSite=[],oujdaSite=[],rabatSite=[],tangerSite=[]
+  -var nbrsitesagadir=0,nbrsitescasablanca=0,nbrsitesmarrakech=0,nbrsitesmeknes=0,nbrsitesoujda=0,nbrsitesrabat=0,nbrsitestanger=0
+  each alarm, i in alarms_ericson
+    -var siteID = alarm[4].match(/[A-Z]{2}\d{4}/)
+    -if(siteID!==null)
+      -var index = nomination_erric.indexOf(siteID[0])
+      -siteID[0]=nomination_erric_2[index]
+    -else
+      -siteID = alarm[4].match(/[A-Z]{3}-\d{4}/)
+    -var done = false
+
+
+
+    //code de classif
+    -var codeClassif
+    each cl, i in classification
+      -var cla = cl["site"].toUpperCase()
+      -if(cla==siteID)
+        -codeClassif=cl["nouvelle classe"]
+        -if(codeClassif == 'A')
+          -nbrsitesA++
+          -break
+        -if(codeClassif == 'B')
+          -nbrsitesB++
+          -break
+        -if(codeClassif == 'C')
+          -nbrsitesC++
+          -break
+        if(codeClassif == 'D')
+          -nbrsitesD++
+          -break
+
+
+    -if(agadir.indexOf(siteID[0]) !== -1)
+      -agadirDone.push(alarm)
+      -agadirSite.push(siteID[0])
+      -nbrsitesagadir++
+      -done=true
+    -if(!done)
+      -if(casablanca.indexOf(siteID[0]) !== -1)
+        -casablancaDone.push(alarm)
+        -casablancaSite.push(siteID[0])
+        -nbrsitescasablanca++
+        -done=true
+    -if(!done)
+      -if(marrakech.indexOf(siteID[0]) !== -1)
+        -marrakechDone.push(alarm)
+        -marrakechSite.push(siteID[0])
+        -nbrsitesmarrakech++
+        -done=true
+    -if(!done)
+      -if(meknes.indexOf(siteID[0]) !== -1)
+        -meknesDone.push(alarm)
+        -meknesSite.push(siteID[0])
+        -nbrsitesmeknes++
+        -done=true
+    -if(!done)
+      -if(oujda.indexOf(siteID[0]) !== -1)
+        -oujdaDone.push(alarm)
+        -oujdaSite.push(siteID[0])
+        -nbrsitesoujda++
+        -done=true
+    -if(!done)
+      -if(rabat.indexOf(siteID[0]) !== -1)
+        -rabatDone.push(alarm)
+        -rabatSite.push(siteID[0])
+        -nbrsitesrabat++
+        -done=true
+    -if(!done)
+      -if(tanger.indexOf(siteID[0]) !== -1)
+        -tangerDone.push(alarm)
+        -tangerSite.push(siteID[0])
+        -nbrsitestanger++
+
+
+
+
+  script(type="text/javascript").
+    function toggleDivElement(id){
+      var divElement = document.getElementById(id);
+      if(divElement.style.display=="none"){
+        divElement.style.display="block";
+      }
+      else{
+        divElement.style.display="none";
+      }
+    }
+
+
+
+
+
+  .row
+    if agadirDone
+      .col-5.offset-1(style="border-width:5px;border-style:groove;margin-top:20px")
+        .row
+          .col-8
+            h6  Agadir
+          .col-2
+            button.down(onclick="toggleDivElement('agadir')")
+              span  cancel
+          .col-2
+            h6  #{nbrsitesagadir}
+        hr
+        #agadir(style="display:none;")
+          table(style="width:100%;font-size:11px")
+            tr
+              th  Site
+              th  Date de début
+              th  Classification
+              th  Zone
+            each ag, i in agadirDone
+              -var siteId = agadirSite[i]
+              -var codeClassif
+              each cl, i in classification
+                -var cla = cl["site"].toUpperCase()
+                -if(cla==siteId)
+                  -codeClassif=cl["nouvelle classe"]
+                  -break
+              tr
+                td  #{agadirSite[i]}
+                td  #{ag[2]} #{ag[3]}
+                td  #{codeClassif}
+                td  #{adresses[0][agadirSite[i]]}
+
+
+
+    if casablancaDone
+      .col-5(style="border-width:5px;border-style:groove;margin-top:20px")
+        .row
+          .col-8
+            h6  Casablanca
+          .col-2
+            button.down(onclick="toggleDivElement('casablanca')")
+              span  cancel
+          .col-2
+            h6  #{nbrsitescasablanca}
+        hr
+        #casablanca(style="display:none;")
+          table(style="width:100%;font-size:11px")
+            tr
+              th  Site
+              th  Date de début
+              th  Classification
+              th  Zone
+            each ag, i in casablancaDone
+              -var siteId = casablancaSite[i]
+              -var codeClassif
+              each cl, i in classification
+                -var cla = cl["site"].toUpperCase()
+                -if(cla==siteId)
+                  -codeClassif=cl["nouvelle classe"]
+                  -break
+              tr
+                td  #{casablancaSite[i]}
+                td  #{ag[2]} #{ag[3]}
+                td  #{codeClassif}
+                td  #{adresses[0][casablancaSite[i]]}
+
+
+    if marrakechDone
+      .col-5.offset-1(style="border-width:5px;border-style:groove;margin-top:20px")
+        .row
+          .col-8
+            h6  Marrakech
+          .col-2
+            button.down(onclick="toggleDivElement('marrakech')")
+              span  cancel
+          .col-2
+            h6  #{nbrsitesmarrakech}
+        hr
+        #marrakech(style="display:none;")
+          table(style="width:100%;font-size:11px")
+            tr
+              th  Site
+              th  Date de début
+              th  Classification
+              th  Zone
+            each ag, i in marrakechDone
+              -var siteId = marrakechSite[i]
+              -var codeClassif
+              each cl, i in classification
+                -var cla = cl["site"].toUpperCase()
+                -if(cla==siteId)
+                  -codeClassif=cl["nouvelle classe"]
+                  -break
+              tr
+                td  #{marrakechSite[i]}
+                td  #{ag[2]} #{ag[3]}
+                td  #{codeClassif}
+                td  #{adresses[0][marrakechSite[i]]}
+
+
+
+    if meknesDone
+      .col-5(style="border-width:5px;border-style:groove;margin-top:20px")
+        .row
+          .col-8
+            h6  Meknes
+          .col-2
+            button.down(onclick="toggleDivElement('meknes')")
+              span  cancel
+          .col-2
+            h6  #{nbrsitesmeknes}
+        hr
+        #meknes(style="display:none;")
+          table(style="width:100%;font-size:11px")
+            tr
+              th  Site
+              th  Date de début
+              th   Classification
+              th  Zone
+            each ag, i in meknesDone
+              -var siteId = meknesSite[i]
+              -var codeClassif
+              each cl, i in classification
+                -var cla = cl["site"].toUpperCase()
+                -if(cla==siteId)
+                  -codeClassif=cl["nouvelle classe"]
+                  -break
+              tr
+                td  #{meknesSite[i]}
+                td  #{ag[2]} #{ag[3]}
+                td  #{codeClassif}
+                td  #{adresses[0][meknesSite[i]]}
+
+
+
+    if oujdaDone
+      .col-5.offset-1(style="border-width:5px;border-style:groove;margin-top:20px")
+        .row
+          .col-8
+            h6  Oujda
+          .col-2
+            button.down(onclick="toggleDivElement('oujda')")
+              span  cancel
+          .col-2
+            h6  #{nbrsitesoujda}
+        hr
+        #oujda(style="display:none;")
+          table(style="width:100%;font-size:11px")
+            tr
+              th  Site
+              th  Date de début
+              th  Classification
+              th  Zone
+            each ag, i in oujdaDone
+              -var siteId = oujdaSite[i]
+              -var codeClassif
+              each cl, i in classification
+                -var cla = cl["site"].toUpperCase()
+                -if(cla==siteId)
+                  -codeClassif=cl["nouvelle classe"]
+                  -break
+              tr
+                td  #{oujdaSite[i]}
+                td  #{ag[2]} #{ag[3]}
+                td  #{codeClassif}
+                td  #{adresses[0][oujdaSite[i]]}
+
+
+
+    if rabatDone
+      .col-5(style="border-width:5px;border-style:groove;margin-top:20px")
+        .row
+          .col-8
+            h6  Rabat
+          .col-2
+            button.down(onclick="toggleDivElement('rabat')")
+              span  cancel
+          .col-2
+            h6  #{nbrsitesrabat}
+        hr
+        #rabat(style="display:none;")
+          table(style="width:100%;font-size:11px")
+            tr
+              th  Site
+              th  Date de début
+              th  Classification
+              th  Zone
+            each ag, i in rabatDone
+              -var siteId = rabatSite[i]
+              -var codeClassif
+              each cl, i in classification
+                -var cla = cl["site"].toUpperCase()
+                -if(cla==siteId)
+                  -codeClassif=cl["nouvelle classe"]
+                  -break
+              tr
+                td  #{rabatSite[i]}
+                td  #{ag[2]} #{ag[3]}
+                td  #{codeClassif}
+                td  #{adresses[0][rabatSite[i]]}
+
+
+
+    if tangerDone
+      .col-5.offset-1(style="border-width:5px;border-style:groove;margin-top:20px")
+        .row
+          .col-8
+            h6  Tanger
+          .col-2
+            button.down(onclick="toggleDivElement('tanger')")
+              span  cancel
+          .col-2
+            h6  #{nbrsitestanger}
+        hr
+        #tanger(style="display:none;")
+          table(style="width:100%;font-size:11px")
+            tr
+              th  Site
+              th  Date de début
+              th  Classification
+              th  Zone
+            each ag, i in tangerDone
+              -var siteId = tangerSite[i]
+              -var codeClassif
+              each cl, i in classification
+                -var cla = cl["site"].toUpperCase()
+                -if(cla==siteId)
+                  -codeClassif=cl["nouvelle classe"]
+                  -break
+              tr
+                td  #{tangerSite[i]}
+                td  #{ag[2]} #{ag[3]}
+                td  #{codeClassif}
+                td  #{adresses[0][tangerSite[i]]}
+
+
+
+
+
+    .col-5.text-center(style="border-width:5px;border-style:groove;margin-top:20px")
+      h2  Rapport par ZI
+      table(style="width:100%;font-size:11px")
+        tr
+          th  Ville
+          th  Nombre de sites HS
+        tr
+          td  agadir
+          td(style="color:red;")  #{nbrsitesagadir}
+        tr
+          td  casablanca
+          td(style="color:red;")  #{nbrsitescasablanca}
+        tr
+          td  marrakech
+          td(style="color:red;")  #{nbrsitesmarrakech}
+        tr
+          td  meknes
+          td(style="color:red;")  #{nbrsitesmeknes}
+        tr
+          td  Oujda
+          td(style="color:red;")  #{nbrsitesoujda}
+        tr
+          td  rabat
+          td(style="color:red;")  #{nbrsitesrabat}
+        tr
+          td  tanger
+          td(style="color:red;")  #{nbrsitestanger}
+        tr
+          -var totalHS = nbrsitesagadir + nbrsitescasablanca + nbrsitesmarrakech + nbrsitesmeknes + nbrsitesoujda + nbrsitesrabat + nbrsitestanger;
+          td  Total
+          td(style="color:red;")  #{totalHS}

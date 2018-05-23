@@ -2,392 +2,641 @@ extends ../layout
 
 block content
   if alarms
+    -console.log("-------------------------\n-------------------------")
     -var agadirDone=[],casablancaDone=[],marrakechDone=[],meknesDone=[],oujdaDone=[],rabatDone=[],tangerDone=[]
-    -var nbrsitesagadir=0,nbrsitescasablanca=0,nbrsitesmarrakech=0,nbrsitesmeknes=0,nbrsitesoujda=0,nbrsitesrabat=0,nbrsitestanger=0
+    -var agadiralarms=[],casablancaalarms=[],marrakechalarms=[],meknesalarms=[],oujdaalarms=[],rabatalarms=[],tangeralarms=[]
+    -var agadiralarmsUp=[],casablancaalarmsUp=[],marrakechalarmsUp=[],meknesalarmsUp=[],oujdaalarmsUp=[],rabatalarmsUp=[],tangeralarmsUp=[]
+    -var nbrsitesagadirHS=0,nbrsitescasablancaHS=0,nbrsitesmarrakechHS=0,nbrsitesmeknesHS=0,nbrsitesoujdaHS=0,nbrsitesrabatHS=0,nbrsitestangerHS=0
+    -var nbrsitesagadirresolu=0,nbrsitescasablancaresolu=0,nbrsitesmarrakechresolu=0,nbrsitesmeknesresolu=0,nbrsitesoujdaresolu=0,nbrsitesrabatresolu=0,nbrsitestangerresolu=0
     each alarm, al in alarms
       -var done = false
-      -var villeVar =  alarm["location information"].match(/[A-Z]{3}-\d{2,4}/i) || alarm["alarm source"]
-      -if(agadir.indexOf(villeVar[0]) !== -1)
-        -if(agadirDone.indexOf(villeVar[0]) == -1)
-          -agadirDone.push(villeVar[0])
-          -nbrsitesagadir++
-          -done = true
-      -if(!done)
-        -if(casablanca.indexOf((villeVar[0] || villeVar)) !== -1)
-          -if(casablancaDone.indexOf(villeVar[0]) == -1)
-            -casablancaDone.push(villeVar[0])
-            -nbrsitescasablanca++
-            -done = true;
-      -if(!done)
-        -if(marrakech.indexOf((villeVar[0] || villeVar)) !== -1)
-          -if(marrakechDone.indexOf(villeVar[0]) == -1)
-            -marrakechDone.push(villeVar[0])
-            -nbrsitesmarrakech++
-            -done = true;
-      -if(!done)
-        -if(meknes.indexOf((villeVar[0] || villeVar)) !== -1)
-          -if(meknesDone.indexOf(villeVar[0]) == -1)
-            -meknesDone.push(villeVar[0])
-            -nbrsitesmeknes++
-            -done = true;
-      -if(!done)
-        -if(oujda.indexOf((villeVar[0] || villeVar)) !== -1)
-          -if(oujdaDone.indexOf(villeVar[0]) == -1)
-            -oujdaDone.push(villeVar[0])
-            -nbrsitesoujda++
-            -done = true;
-      -if(!done)
-        -if(rabat.indexOf((villeVar[0] || villeVar)) !== -1)
-          -if(rabatDone.indexOf(villeVar[0]) == -1)
-            -rabatDone.push(villeVar[0])
-            -nbrsitesrabat++
-            -done = true;
-      -if(!done)
-        -if(tanger.indexOf((villeVar[0] || villeVar)) !== -1)
-          -if(tangerDone.indexOf(villeVar[0]) == -1)
-            -tangerDone.push(villeVar[0])
-            -nbrsitestanger++
-            -done = true;
-  if alarms_ericson
-    each alarm_ericson, al in alarms_ericson
-      -var done = false
-      -var villeVar =  alarm_ericson["element  specificproblem"].match(/[A-Z]{2}\d{4}/i)
-      -var index = nomination_erric.indexOf(villeVar[0])
-      -var villeVar2 = nomination_erric_2[index]
-      -console.log(villeVar[0]+" : "+villeVar2)
-      -if(agadir.indexOf(villeVar2) !== -1)
-        -if(agadirDone.indexOf(villeVar2) == -1)
-          -agadirDone.push(villeVar2)
-          -nbrsitesagadir++
-          -done = true
-      -if(!done)
-        -if(casablanca.indexOf((villeVar2)) !== -1)
-          -if(casablancaDone.indexOf(villeVar2) == -1)
-            -casablancaDone.push(villeVar2)
-            -nbrsitescasablanca++
-            -done = true;
-      -if(!done)
-        -if(marrakech.indexOf((villeVar2)) !== -1)
-          -if(marrakechDone.indexOf(villeVar2) == -1)
-            -marrakechDone.push(villeVar2)
-            -nbrsitesmarrakech++
-            -done = true;
-      -if(!done)
-        -if(meknes.indexOf((villeVar2)) !== -1)
-          -if(meknesDone.indexOf(villeVar2) == -1)
-            -meknesDone.push(villeVar2)
-            -nbrsitesmeknes++
-            -done = true;
-      -if(!done)
-        -if(oujda.indexOf((villeVar2)) !== -1)
-          -if(oujdaDone.indexOf(villeVar2) == -1)
-            -oujdaDone.push(villeVar2)
-            -nbrsitesoujda++
-            -done = true;
-      -if(!done)
-        -if(rabat.indexOf((villeVar2)) !== -1)
-          -if(rabatDone.indexOf(villeVar2) == -1)
-            -rabatDone.push(villeVar2)
-            -nbrsitesrabat++
-            -done = true;
-      -if(!done)
-        -if(tanger.indexOf((villeVar2)) !== -1)
-          -if(tangerDone.indexOf(villeVar2) == -1)
-            -tangerDone.push(villeVar2)
-            -nbrsitestanger++
-            -done = true;
+      -var villeVar =  alarm["location information"].match(/[A-Z]{3}-\d{2,4}/i) || alarm["mo name"].match(/[A-Z]{3}-\d{2,4}/i)
+      -if(villeVar!=null)
+        -var index = agadir.indexOf(villeVar[0])
+        -if(index !== -1)
+          -var indexDone = agadirDone.indexOf(villeVar[0])
+          -if(indexDone == -1)
+            -var alarmname = alarm["name"]
+            -var arr=["NodeB Unavailable","OML Fault","NE Is Disconnected"]
+            -if(arr.indexOf(alarmname)!==-1)
+              -agadirDone.push(villeVar[0])
+              -if(alarm["clearance status"]=="Cleared")
+                -nbrsitesagadirresolu++
+                -agadiralarmsUp.push(alarm)
+              -if(alarm["clearance status"]=="-")
+                -agadiralarms.push(alarm)
+                -nbrsitesagadirHS++
+              -done = true
+        if(!done)
+          -var index = casablanca.indexOf(villeVar[0])
+          -if(index !== -1)
+            -var indexDone = casablancaDone.indexOf(villeVar[0])
+            -if(indexDone == -1)
+              -var alarmname = alarm["name"]
+              -var arr=["NodeB Unavailable","OML Fault","NE Is Disconnected"]
+              -if(arr.indexOf(alarmname)!==-1)
+                -casablancaDone.push(villeVar[0])
+                -if(alarm["clearance status"]=="Cleared")
+                  -nbrsitescasablancaresolu++
+                  -casablancaalarmsUp.push(alarm)
+                -if(alarm["clearance status"]=="-")
+                  -casablancaalarms.push(alarm)
+                  -nbrsitescasablancaHS++
+                -done = true
+        if(!done)
+          -var index = marrakech.indexOf(villeVar[0])
+          -if(index !== -1)
+            -var indexDone = marrakechDone.indexOf(villeVar[0])
+            -if(indexDone == -1)
+              -var alarmname = alarm["name"]
+              -var arr=["NodeB Unavailable","OML Fault","NE Is Disconnected"]
+              -if(arr.indexOf(alarmname)!==-1)
+                -marrakechDone.push(villeVar[0])
+                -if(alarm["clearance status"]=="Cleared")
+                  -nbrsitesmarrakechresolu++
+                  -marrakechalarmsUp.push(alarm)
+                -if(alarm["clearance status"]=="-")
+                  -marrakechalarms.push(alarm)
+                  -nbrsitesmarrakechHS++
+                -done = true
+        if(!done)
+          -var index = meknes.indexOf(villeVar[0])
+          -if(index !== -1)
+            -var indexDone = meknesDone.indexOf(villeVar[0])
+            -if(indexDone == -1)
+              -var alarmname = alarm["name"]
+              -var arr=["NodeB Unavailable","OML Fault","NE Is Disconnected"]
+              -if(arr.indexOf(alarmname)!==-1)
+                -meknesDone.push(villeVar[0])
+                -if(alarm["clearance status"]=="Cleared")
+                  -nbrsitesmeknesresolu++
+                  -meknesalarmsUp.push(alarm)
+                -if(alarm["clearance status"]=="-")
+                  -meknesalarms.push(alarm)
+                  -nbrsitesmeknesHS++
+                -done = true
+        if(!done)
+          -var index = oujda.indexOf(villeVar[0])
+          -if(index !== -1)
+            -var indexDone = oujdaDone.indexOf(villeVar[0])
+            -if(indexDone == -1)
+              -var alarmname = alarm["name"]
+              -var arr=["NodeB Unavailable","OML Fault","NE Is Disconnected"]
+              -if(arr.indexOf(alarmname)!==-1)
+                -oujdaDone.push(villeVar[0])
+                -if(alarm["clearance status"]=="Cleared")
+                  -nbrsitesoujdaresolu++
+                  -oujdaalarmsUp.push(alarm)
+                -if(alarm["clearance status"]=="-")
+                  -oujdaalarms.push(alarm)
+                  -nbrsitesoujdaHS++
+                -done = true
+        if(!done)
+          -var index = rabat.indexOf(villeVar[0])
+          -if(index !== -1)
+            -var indexDone = rabatDone.indexOf(villeVar[0])
+            -if(indexDone == -1)
+              -var alarmname = alarm["name"]
+              -var arr=["NodeB Unavailable","OML Fault","NE Is Disconnected"]
+              -if(arr.indexOf(alarmname)!==-1)
+                -rabatDone.push(villeVar[0])
+                -if(alarm["clearance status"]=="Cleared")
+                  -nbrsitesrabatresolu++
+                  -rabatalarmsUp.push(alarm)
+                -if(alarm["clearance status"]=="-")
+                  -rabatalarms.push(alarm)
+                  -nbrsitesrabatHS++
+                -done = true
+        if(!done)
+          -var index = tanger.indexOf(villeVar[0])
+          -if(index !== -1)
+            -var indexDone = tangerDone.indexOf(villeVar[0])
+            -if(indexDone == -1)
+              -var alarmname = alarm["name"]
+              -var arr=["NodeB Unavailable","OML Fault","NE Is Disconnected"]
+              -if(arr.indexOf(alarmname)!==-1)
+                -tangerDone.push(villeVar[0])
+                -if(alarm["clearance status"]=="Cleared")
+                  -nbrsitestangerresolu++
+                  -tangeralarmsUp.push(alarm)
+                -if(alarm["clearance status"]=="-")
+                  -tangeralarms.push(alarm)
+                  -nbrsitestangerHS++
+                -done = true
 
 
 
-    h1.text-center  Sites HS
-    hr
-    .row.text-center
-      .col-1
-        h3  Ville
-      .col-1
-        div.vl
-      .col-1
-        h6  Nombre de sites HS
-      .col-1
-        div.vl
-      .col-8
-        h3  Détail
-    hr
-    .row.text-center
-      .col-1
-        h6  Agadir
-      .col-1
-        div.vl
-      .col-1
-        h3  #{nbrsitesagadir}
-      .col-1
-        div.vl
-      .col-8
-        p
-          each ag, i in agadirDone
-            a(href="/siteshs/site/"+ag , target="_blank",style="display:inline") #{ag}
-            |  -
-    hr
-    .row.text-center
-      .col-1
-        h6  Casablanca
-      .col-1
-        div.vl
-      .col-1
-        h3  #{nbrsitescasablanca}
-      .col-1
-        div.vl
-      .col-8
-        p
-          each ca, i in casablancaDone
-            a(href="/siteshs/site/"+ca , target="_blank",style="display:inline") #{ca}
-            |  -
-    hr
-    .row.text-center
-      .col-1
-        h6  Marrakech
-      .col-1
-        div.vl
-      .col-1
-        h3  #{nbrsitesmarrakech}
-      .col-1
-        div.vl
-      .col-8
-        p
-          each ma, i in marrakechDone
-            a(href="/siteshs/site/"+ma , target="_blank",style="display:inline") #{ma}
-            |  -
-    hr
-    .row.text-center
-      .col-1
-        h6  Meknes
-      .col-1
-        div.vl
-      .col-1
-        h3  #{nbrsitesmeknes}
-      .col-1
-        div.vl
-      .col-8
-        p
-          each me, i in meknesDone
-            a(href="/siteshs/site/"+me , target="_blank",style="display:inline") #{me}
-            |  -
-    hr
-    .row.text-center
-      .col-1
-        h6  Oujda
-      .col-1
-        div.vl
-      .col-1
-        h3  #{nbrsitesoujda}
-      .col-1
-        div.vl
-      .col-8
-        p
-          each ou, i in oujdaDone
-            a(href="/siteshs/site/"+ou , target="_blank",style="display:inline") #{ou}
-            |  -
-    hr
-    .row.text-center
-      .col-1
-        h6  Rabat
-      .col-1
-        div.vl
-      .col-1
-        h3  #{nbrsitesrabat}
-      .col-1
-        div.vl
-      .col-8
-        p
-          each ra, i in rabatDone
-            a(href="/siteshs/site/"+ra , target="_blank",style="display:inline") #{ra}
-            |  -
-    hr
-    .row.text-center
-      .col-1
-        h6  Tanger
-      .col-1
-        div.vl
-      .col-1
-        h3  #{nbrsitestanger}
-      .col-1
-        div.vl
-      .col-8
-        p
-          each ta, i in tangerDone
-            a(href="/siteshs/site/"+ta , target="_blank",style="display:inline") #{ta}
-            |  -
+  script(type="text/javascript").
+    function showalarms(id){
+      var divElement = document.getElementById(id);
+      var str = id.substring(0,id.length-2);
+      var str2 = id.substring(id.length-2,id.length);
+
+
+      if(str2=='Up'){
+        var str = id.substring(0,id.length-2);
+        str += "Down";
+      }
+      else{
+      var str = id.substring(0,id.length-4);
+      str += "Up";
+      }
+
+      var divElementToHide = document.getElementById(str)
+      if(divElement.style.display=="none"){
+        divElement.style.display="block";
+        divElementToHide.style.display="none"
+      }
+      else{
+        divElement.style.display="none";
+      }
+    }
 
 
 
 
 
-  if alarms
-    -var secteuragadirDone=[],secteurcasablancaDone=[],secteurmarrakechDone=[],secteurmeknesDone=[],secteuroujdaDone=[],secteurrabatDone=[],secteurtangerDone=[]
-    -var nbrsecteursagadir=0,nbrsecteurscasablanca=0,nbrsecteursmarrakech=0,nbrsecteursmeknes=0,nbrsecteursoujda=0,nbrsecteursrabat=0,nbrsecteurstanger=0
-    each alarm, al in alarms
-      -var done = false
-      -var secteurVar =  alarm["location information"].match(/[A-Z]{3}-\d{2,4}_\w+/i) || [null]
-      -if(secteurVar[0])
-        -var siteID = secteurVar[0].match(/[A-Z]{3}-\d{2,4}/i)
-        -if(agadir.indexOf(siteID[0]) !== -1)
-          -if(secteuragadirDone.indexOf(secteurVar[0]) == -1)
-            -secteuragadirDone.push(secteurVar[0])
-            -nbrsecteursagadir++
-            -done = true
-        -if(!done)
-          -if(casablanca.indexOf((siteID[0])) !== -1)
-            -if(secteurcasablancaDone.indexOf(secteurVar[0]) == -1)
-              -secteurcasablancaDone.push(secteurVar[0])
-              -nbrsecteurscasablanca++
-              -done = true;
-        -if(!done)
-          -if(marrakech.indexOf((siteID[0])) !== -1)
-            -if(secteurmarrakechDone.indexOf(secteurVar[0]) == -1)
-              -secteurmarrakechDone.push(secteurVar[0])
-              -nbrsecteursmarrakech++
-              -done = true;
-        -if(!done)
-          -if(meknes.indexOf((siteID[0])) !== -1)
-            -if(secteurmeknesDone.indexOf(secteurVar[0]) == -1)
-              -secteurmeknesDone.push(secteurVar[0])
-              -nbrsecteursmeknes++
-              -done = true;
-        -if(!done)
-          -if(oujda.indexOf((siteID[0])) !== -1)
-            -if(secteuroujdaDone.indexOf(secteurVar[0]) == -1)
-              -secteuroujdaDone.push(secteurVar[0])
-              -nbrsecteursoujda++
-              -done = true;
-        -if(!done)
-          -if(rabat.indexOf((siteID[0])) !== -1)
-            -if(secteurrabatDone.indexOf(secteurVar[0]) == -1)
-              -secteurrabatDone.push(secteurVar[0])
-              -nbrsecteursrabat++
-              -done = true;
-        -if(!done)
-          -if(tanger.indexOf((siteID[0])) !== -1)
-            -if(secteurtangerDone.indexOf(secteurVar[0]) == -1)
-              -secteurtangerDone.push(secteurVar[0])
-              -nbrsecteurstanger++
-              -done = true;
-    hr
-    div.empty100
-    h1.text-center  Secteurs HS
-    hr
-    .row.text-center
-      .col-1
-        h3  Ville
-      .col-1
-        div.vl
-      .col-1
-        h6  Nombre de Secteurs HS
-      .col-1
-        div.vl
-      .col-8
-        h3  Détail
-    hr
-    .row.text-center
-      .col-1
-        h6  Agadir
-      .col-1
-        div.vl
-      .col-1
-        h3  #{nbrsecteursagadir}
-      .col-1
-        div.vl
-      .col-8
-        p
-          each ag, i in secteuragadirDone
-            a(href="/siteshs/secteur/"+ag , target="_blank",style="display:inline") #{ag}
-            |  -
-    hr
-    .row.text-center
-      .col-1
-        h6  Casablanca
-      .col-1
-        div.vl
-      .col-1
-        h3  #{nbrsecteurscasablanca}
-      .col-1
-        div.vl
-      .col-8
-        p
-          each ca, i in secteurcasablancaDone
-            a(href="/siteshs/secteur/"+ca , target="_blank",style="display:inline") #{ca}
-            |  -
-    hr
-    .row.text-center
-      .col-1
-        h6  Marrakech
-      .col-1
-        div.vl
-      .col-1
-        h3  #{nbrsecteursmarrakech}
-      .col-1
-        div.vl
-      .col-8
-        p
-          each ma, i in secteurmarrakechDone
-            a(href="/siteshs/secteur/"+ma , target="_blank",style="display:inline") #{ma}
-            |  -
-    hr
-    .row.text-center
-      .col-1
-        h6  Meknes
-      .col-1
-        div.vl
-      .col-1
-        h3  #{nbrsecteursmeknes}
-      .col-1
-        div.vl
-      .col-8
-        p
-          each me, i in secteurmeknesDone
-            a(href="/siteshs/secteur/"+me , target="_blank",style="display:inline") #{me}
-            |  -
-    hr
-    .row.text-center
-      .col-1
-        h6  Oujda
-      .col-1
-        div.vl
-      .col-1
-        h3  #{nbrsecteursoujda}
-      .col-1
-        div.vl
-      .col-8
-        p
-          each ou, i in secteuroujdaDone
-            a(href="/siteshs/secteur/"+ou , target="_blank",style="display:inline") #{ou}
-            |  -
-    hr
-    .row.text-center
-      .col-1
-        h6  Rabat
-      .col-1
-        div.vl
-      .col-1
-        h3  #{nbrsecteursrabat}
-      .col-1
-        div.vl
-      .col-8
-        p
-          each ra, i in secteurrabatDone
-            a(href="/siteshs/secteur/"+ra , target="_blank",style="display:inline") #{ra}
-            |  -
-    hr
-    .row.text-center
-      .col-1
-        h6  Tanger
-      .col-1
-        div.vl
-      .col-1
-        h3  #{nbrsecteurstanger}
-      .col-1
-        div.vl
-      .col-8
-        p
-          each ta, i in secteurtangerDone
-            a(href="/siteshs/secteur/"+ta , target="_blank",style="display:inline") #{ta}
-            |  -
+
+  .row
+    if agadirDone
+      .col-5.offset-1(style="border-width:5px;border-style:groove;margin-top:20px")
+        .row
+          .col-6
+            h6  Agadir
+          .col-1
+            button.down(onclick="showalarms('agadirDown')")
+              span  cancel
+          .col-1
+            h6(style="left: 100%;")  #{nbrsitesagadirHS}
+          .col-1
+            button.up(onclick="showalarms('agadirUp')")
+              span  cancel
+          .col-1
+            h6(style="left: 100%;" )  #{nbrsitesagadirresolu}
+        #agadirUp(style="display:none;font-size:11px;")
+          table(style="width:100%;")
+            tr
+              th  Site
+              th  Vendor
+              th  Date de fin
+              th  Classification
+              th  Zone
+            each ag, i in agadiralarmsUp
+              -var siteId = ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)
+              -var codeClassif
+              each cl, i in classification
+                -var cla = cl["site"].toUpperCase()
+                -if(cla==siteId)
+                  -codeClassif=cl["nouvelle classe"]
+                  -break
+                -codeClassif= "NA"
+              tr
+                td(style="color:green")  #{siteId}
+                td  huawei
+                td  #{ag["cleared on (nt)"]}
+                td  #{codeClassif}
+                td  #{adresses[0][siteId[0]]}
+        #agadirDown(style="display:none;font-size:11px;")
+          table(style="width:100%;")
+            tr
+              th  Site
+              th  Vendor
+              th  Date de fin
+              th  Classification
+              th  Zone
+            each ag, i in agadiralarms
+              -var siteId = ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)
+              -var codeClassif
+              each cl, i in classification
+                -var cla = cl["site"].toUpperCase()
+                -if(cla==siteId)
+                  -codeClassif=cl["nouvelle classe"]
+                  -break
+              tr
+                td(style="color:red")  #{ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)}
+                td  huawei
+                td  #{ag["cleared on (nt)"]}
+                td  #{codeClassif}
+                td  #{adresses[0][siteId[0]]}
+    if casablancaDone
+      .col-5(style="border-width:5px;border-style:groove;margin-top:20px")
+        .row
+          .col-6
+            h6  Casablanca
+          .col-1
+            button.down(onclick="showalarms('casablancaDown')")
+              span  cancel
+          .col-1
+            h6(style="left: 100%;")  #{nbrsitescasablancaHS}
+          .col-1
+            button.up(onclick="showalarms('casablancaUp')")
+              span  cancel
+          .col-1
+            h6(style="left: 100%;" )  #{nbrsitescasablancaresolu}
+        #casablancaUp(style="display:none;font-size:11px;")
+          table(style="width:100%;")
+            tr
+              th  Site
+              th  Vendor
+              th  Date de fin
+              th  Classification
+              th  Zone
+            each ag, i in casablancaalarmsUp
+              -var siteId = ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)
+              -var codeClassif
+              each cl, i in classification
+                -var cla = cl["site"].toUpperCase()
+                -if(cla==siteId)
+                  -codeClassif=cl["nouvelle classe"]
+                  -break
+                -codeClassif= "NA"
+              tr
+                td(style="color:green")  #{siteId}
+                td  huawei
+                td  #{ag["cleared on (nt)"]}
+                td  #{codeClassif}
+                td  #{adresses[0][siteId[0]]}
+        #casablancaDown(style="display:none;font-size:11px;")
+          table(style="width:100%;")
+            tr
+              th  Site
+              th  Vendor
+              th  Date de fin
+              th  Classification
+              th  Zone
+            each ag, i in casablancaalarms
+              -var siteId = ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)
+              -var codeClassif
+              each cl, i in classification
+                -var cla = cl["site"].toUpperCase()
+                -if(cla==siteId)
+                  -codeClassif=cl["nouvelle classe"]
+                  -break
+              tr
+                td(style="color:red")  #{ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)}
+                td  huawei
+                td  #{ag["cleared on (nt)"]}
+                td  #{codeClassif}
+                td  #{adresses[0][siteId[0]]}
+
+
+
+    if marrakechDone
+      .col-5.offset-1(style="border-width:5px;border-style:groove;margin-top:20px")
+        .row
+          .col-6
+            h6  Marrakech
+          .col-1
+            button.down(onclick="showalarms('marrakechDown')")
+              span  cancel
+          .col-1
+            h6(style="left: 100%;")  #{nbrsitesmarrakechHS}
+          .col-1
+            button.up(onclick="showalarms('marrakechUp')")
+              span  cancel
+          .col-1
+            h6(style="left: 100%;" )  #{nbrsitesmarrakechresolu}
+        #marrakechUp(style="display:none;font-size:11px;")
+          table(style="width:100%;")
+            tr
+              th  Site
+              th  Vendor
+              th  Date de fin
+              th  Classification
+              th  Zone
+            each ag, i in marrakechalarmsUp
+              -var siteId = ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)
+              -var codeClassif
+              each cl, i in classification
+                -var cla = cl["site"].toUpperCase()
+                -if(cla==siteId)
+                  -codeClassif=cl["nouvelle classe"]
+                  -break
+                -codeClassif= "NA"
+              tr
+                td(style="color:green")  #{siteId}
+                td  huawei
+                td  #{ag["cleared on (nt)"]}
+                td  #{codeClassif}
+                td  #{adresses[0][siteId[0]]}
+        #marrakechDown(style="display:none;font-size:11px;")
+          table(style="width:100%;")
+            tr
+              th  Site
+              th  Vendor
+              th  Date de fin
+              th  Classification
+              th  Zone
+            each ag, i in marrakechalarms
+              -var siteId = ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)
+              -var codeClassif
+              each cl, i in classification
+                -var cla = cl["site"].toUpperCase()
+                -if(cla==siteId)
+                  -codeClassif=cl["nouvelle classe"]
+                  -break
+              tr
+                td(style="color:red")  #{ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)}
+                td  huawei
+                td  #{ag["cleared on (nt)"]}
+                td  #{codeClassif}
+                td  #{adresses[0][siteId[0]]}
+
+
+
+    if meknesDone
+      .col-5(style="border-width:5px;border-style:groove;margin-top:20px")
+        .row
+          .col-6
+            h6  Meknes
+          .col-1
+            button.down(onclick="showalarms('meknesDown')")
+              span  cancel
+          .col-1
+            h6(style="left: 100%;")  #{nbrsitesmeknesHS}
+          .col-1
+            button.up(onclick="showalarms('meknesUp')")
+              span  cancel
+          .col-1
+            h6(style="left: 100%;" )  #{nbrsitesmeknesresolu}
+        #meknesUp(style="display:none;font-size:11px;")
+          table(style="width:100%;")
+            tr
+              th  Site
+              th  Vendor
+              th  Date de fin
+              th  Classification
+              th  Zone
+            each ag, i in meknesalarmsUp
+              -var siteId = ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)
+              -var codeClassif
+              each cl, i in classification
+                -var cla = cl["site"].toUpperCase()
+                -if(cla==siteId)
+                  -codeClassif=cl["nouvelle classe"]
+                  -break
+                -codeClassif= "NA"
+              tr
+                td(style="color:green")  #{siteId}
+                td  huawei
+                td  #{ag["cleared on (nt)"]}
+                td  #{codeClassif}
+                td  #{adresses[0][siteId[0]]}
+        #meknesDown(style="display:none;font-size:11px;")
+          table(style="width:100%;")
+            tr
+              th  Site
+              th  Vendor
+              th  Date de fin
+              th  Classification
+              th  Zone
+            each ag, i in meknesalarms
+              -var siteId = ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)
+              -var codeClassif
+              each cl, i in classification
+                -var cla = cl["site"].toUpperCase()
+                -if(cla==siteId)
+                  -codeClassif=cl["nouvelle classe"]
+                  -break
+              tr
+                td(style="color:red")  #{ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)}
+                td  huawei
+                td  #{ag["cleared on (nt)"]}
+                td  #{codeClassif}
+                td  #{adresses[0][siteId[0]]}
+
+
+
+    if oujdaDone
+      .col-5.offset-1(style="border-width:5px;border-style:groove;margin-top:20px")
+        .row
+          .col-6
+            h6  Oujda
+          .col-1
+            button.down(onclick="showalarms('oujdaDown')")
+              span  cancel
+          .col-1
+            h6(style="left: 100%;")  #{nbrsitesoujdaHS}
+          .col-1
+            button.up(onclick="showalarms('oujdaUp')")
+              span  cancel
+          .col-1
+            h6(style="left: 100%;" )  #{nbrsitesoujdaresolu}
+        #oujdaUp(style="display:none;font-size:11px;")
+          table(style="width:100%;")
+            tr
+              th  Site
+              th  Vendor
+              th  Date de fin
+              th  Classification
+              th  Zone
+            each ag, i in oujdaalarmsUp
+              -var siteId = ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)
+              -var codeClassif
+              each cl, i in classification
+                -var cla = cl["site"].toUpperCase()
+                -if(cla==siteId)
+                  -codeClassif=cl["nouvelle classe"]
+                  -break
+                -codeClassif= "NA"
+              tr
+                td(style="color:green")  #{siteId}
+                td  huawei
+                td  #{ag["cleared on (nt)"]}
+                td  #{codeClassif}
+                td  #{adresses[0][siteId[0]]}
+        #oujdaDown(style="display:none;font-size:11px;")
+          table(style="width:100%;")
+            tr
+              th  Site
+              th  Vendor
+              th  Date de fin
+              th  Classification
+              th  Zone
+            each ag, i in oujdaalarms
+              -var siteId = ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)
+              -var codeClassif
+              each cl, i in classification
+                -var cla = cl["site"].toUpperCase()
+                -if(cla==siteId)
+                  -codeClassif=cl["nouvelle classe"]
+                  -break
+              tr
+                td(style="color:red")  #{ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)}
+                td  huawei
+                td  #{ag["cleared on (nt)"]}
+                td  #{codeClassif}
+                td  #{adresses[0][siteId[0]]}
+
+
+
+    if rabatDone
+      .col-5(style="border-width:5px;border-style:groove;margin-top:20px")
+        .row
+          .col-6
+            h6  Rabat
+          .col-1
+            button.down(onclick="showalarms('rabatDown')")
+              span  cancel
+          .col-1
+            h6(style="left: 100%;")  #{nbrsitesrabatHS}
+          .col-1
+            button.up(onclick="showalarms('rabatUp')")
+              span  cancel
+          .col-1
+            h6(style="left: 100%;" )  #{nbrsitesrabatresolu}
+        #rabatUp(style="display:none;font-size:11px;")
+          table(style="width:100%;")
+            tr
+              th  Site
+              th  Vendor
+              th  Date de fin
+              th  Classification
+              th  Zone
+            each ag, i in rabatalarmsUp
+              -var siteId = ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)
+              -var codeClassif
+              each cl, i in classification
+                -var cla = cl["site"].toUpperCase()
+                -if(cla==siteId)
+                  -codeClassif=cl["nouvelle classe"]
+                  -break
+                -codeClassif= "NA"
+              tr
+                td(style="color:green")  #{siteId}
+                td  huawei
+                td  #{ag["cleared on (nt)"]}
+                td  #{codeClassif}
+                td  #{adresses[0][siteId[0]]}
+        #rabatDown(style="display:none;font-size:11px;")
+          table(style="width:100%;")
+            tr
+              th  Site
+              th  Vendor
+              th  Date de fin
+              th  Classification
+              th  Zone
+            each ag, i in rabatalarms
+              -var siteId = ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)
+              -var codeClassif
+              each cl, i in classification
+                -var cla = cl["site"].toUpperCase()
+                -if(cla==siteId)
+                  -codeClassif=cl["nouvelle classe"]
+                  -break
+              tr
+                td(style="color:red")  #{ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)}
+                td  huawei
+                td  #{ag["cleared on (nt)"]}
+                td  #{codeClassif}
+                td  #{adresses[0][siteId[0]]}
+
+
+
+
+    if tangerDone
+      .col-5.offset-1(style="border-width:5px;border-style:groove;margin-top:20px")
+        .row
+          .col-6
+            h6  Tanger
+          .col-1
+            button.down(onclick="showalarms('tangerDown')")
+              span  cancel
+          .col-1
+            h6(style="left: 100%;")  #{nbrsitestangerHS}
+          .col-1
+            button.up(onclick="showalarms('tangerUp')")
+              span  cancel
+          .col-1
+            h6(style="left: 100%;" )  #{nbrsitestangerresolu}
+        #tangerUp(style="display:none;font-size:11px;")
+          table(style="width:100%;")
+            tr
+              th  Site
+              th  Vendor
+              th  Date de fin
+              th  Classification
+              th  Zone
+            each ag, i in tangeralarmsUp
+              -var siteId = ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)
+              -var codeClassif
+              each cl, i in classification
+                -var cla = cl["site"].toUpperCase()
+                -if(cla==siteId)
+                  -codeClassif=cl["nouvelle classe"]
+                  -break
+                  -codeClassif= "NA"
+              tr
+                td(style="color:green")  #{siteId}
+                td  huawei
+                td  #{ag["cleared on (nt)"]}
+                td  #{codeClassif}
+                td  td  #{adresses[0][siteId[0]]}
+        #tangerDown(style="display:none;font-size:11px;")
+          table(style="width:100%;")
+            tr
+              th  Site
+              th  Vendor
+              th  Date de fin
+              th  Classification
+              th  Zone
+            each ag, i in tangeralarms
+              -var siteId = ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)
+              -var codeClassif
+              each cl, i in classification
+                -var cla = cl["site"].toUpperCase()
+                -if(cla==siteId)
+                  -codeClassif=cl["nouvelle classe"]
+                  -break
+              tr
+                td(style="color:red")  #{ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)}
+                td  huawei
+                td  #{ag["cleared on (nt)"]}
+                td  #{codeClassif}
+                td  #{adresses[0][siteId[0]]}
+
+
+
+
+
+
+    .col-5.text-center(style="border-width:5px;border-style:groove;margin-top:20px")
+      table(style="width:100%;font-size:11px")
+        tr
+          th  Ville
+          th  Nombre de sites HS
+          th  Nombre de sites résolus
+        tr
+          td  agadir
+          td(style="color:red;")  #{nbrsitesagadirHS}
+          td(style="color:green;")  #{nbrsitesagadirresolu}
+        tr
+          td  casablanca
+          td(style="color:red;")  #{nbrsitescasablancaHS}
+          td(style="color:green;")  #{nbrsitescasablancaresolu}
+        tr
+          td  marrakech
+          td(style="color:red;")  #{nbrsitesmarrakechHS}
+          td(style="color:green;")  #{nbrsitesmarrakechresolu}
+        tr
+          td  meknes
+          td(style="color:red;")  #{nbrsitesmeknesHS}
+          td(style="color:green;")  #{nbrsitesmeknesresolu}
+        tr
+          td  Oujda
+          td(style="color:red;")  #{nbrsitesoujdaHS}
+          td(style="color:green;")  #{nbrsitesoujdaresolu}
+        tr
+          td  rabat
+          td(style="color:red;")  #{nbrsitesrabatHS}
+          td(style="color:green;")  #{nbrsitesrabatresolu}
+        tr
+          td  tanger
+          td(style="color:red;")  #{nbrsitestangerHS}
+          td(style="color:green;")  #{nbrsitestangerresolu}
+        tr
+          -var totalHS = nbrsitesagadirHS + nbrsitescasablancaHS + nbrsitesmarrakechHS + nbrsitesmeknesHS + nbrsitesoujdaHS + nbrsitesrabatHS + nbrsitestangerHS;
+          -var totalresolu = nbrsitesagadirresolu + nbrsitescasablancaresolu + nbrsitesmarrakechresolu + nbrsitesmeknesresolu + nbrsitesoujdaresolu + nbrsitesrabatresolu + nbrsitestangerresolu;
+          td  Total
+          td(style="color:red;")  #{totalHS}
+          td(style="color:green;") #{totalresolu}
