@@ -1,76 +1,54 @@
 extends ../layout
 
 block content
-  if classification
-    -var classe
-    each cl, i in classification
-      -if(cl["site"]===site)
-        -classe=cl["nouvelle classe"]
-        -break
+  -var index = 0
+  -var alarmesSites = []
+  -var sommeDuree = 0
+  each alarm, al in alarms
+    -var siteID =  alarm["location information"].match(/[A-Z]{3}-\d{2,4}/i) || alarm["mo name"].match(/[A-Z]{3}-\d{2,4}/i)
+    -if(siteID !== null && siteID[0] == site && alarm["clearance status"] == "Cleared")
+      -var temp = {}
+      -var alarmName = alarm["name"]
+      -var tech=""
+      -if(alarmName =="NodeB Unavailable")
+        -tech = "2G"
+      -if(alarmName == "OML Fault")
+        -tech = "3G"
+      -if(alarmName == "NE Is Disconnected")
+        -tech = "4G"
+      -if(tech !== "")
+        -temp.siteID = siteID[0]
+        -temp.date_debut=alarm["first occurred (nt)"]
+        -temp.date_fin = alarm["cleared on (nt)"]
+        -temp.technology = tech
+        -var date1 = alarm["first occurred (nt)"]
+        -var date2 = alarm["cleared on (nt)"]
+        -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+        -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+        -temp.duree = (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+        -sommeDuree += temp.duree
+        -alarmesSites[index]=temp
+        --index++
 
-  div.empty100
-  .container
+
+  .jumbotron
+    .empty25
     .row.text-center
-      col-4
-        h2
-          | Site ID :
-          strong.bleu  #{site}
-      .col-1
-        .vl
-      .col-3
-        h2
-          | Classe :
-          strong  #{classe}
-      .col-1
-        .vl
-      .col-3
-        h2  #{vender}
-  hr
-  if alarms
-    .row.text-center
-      .col-5
-        h2  Date début incident
-      .col-2
-        div.vl
-      .col-5
-        h2  Date fin incident
-    hr
-    -var alarmsID = []
-    each alarm, al in alarms
-      -var siteID =  alarm["location information"].match(/[A-Z]{3}-\d{2,4}/i) || alarm["alarm source"]
-      -if(siteID[0])
-        -if(siteID[0] === site)
-          -var date_debut = alarm["first occurred (nt)"] || alarm["occurred on (nt)"]
-          -if(alarmsID.indexOf(date_debut) == -1)
-            -alarmsID.push(date_debut)
-            .row.text-center
-              .col-5
-                h6  #{date_debut}
-              .col-2
-                div.vl
-              .col-5
-                -var date_fin = alarm["cleared on (nt)"]
-                h6  #{date_fin}
-              hr
-    each alarm, al in alarm_ericson
-      -var siteID =  alarm["element  specificproblem"].match(/[A-Z]{2}\d{4}/i)
-      -console.log(siteID[0])
-      -var index = nomination_erric_2.indexOf(site)
-      -var siteID2 = nomination_erric[index]
-      -console.log(siteID2)
-      -if(siteID2)
-        -if(siteID[0] === siteID2)
-          -console.log('hahiyaa')
-          -var date_debut = alarm["severity  eventtime  managed"]
-          -console.log("date : " + date_debut)
-          -if(alarmsID.indexOf(date_debut) == -1)
-            -alarmsID.push(date_debut)
-            .row.text-center
-              .col-5
-                h6  #{date_debut}
-              .col-2
-                div.vl
-              .col-5
-                -var date_fin = alarm["cleared on (nt)"] || "--"
-                h6  #{date_fin}
-              hr
+      .col-4
+        h6  Site ID : #{site}
+      .col-4
+        h6  ZI : #{adresses[0][site]}
+      .col-4
+        h6  Durrée totale : #{sommeDuree} s
+    table.text-center(style="width:100%")
+      tr
+        th  Date de début d'incident
+        th  Date de fin d'incident
+        th  Technologie
+        th  Durée
+      each alarmeSite, as in alarmesSites
+        tr
+          td  #{alarmeSite.date_debut}
+          td  #{alarmeSite.date_fin}
+          td  #{alarmeSite.technology}
+          td  #{alarmeSite.duree} s

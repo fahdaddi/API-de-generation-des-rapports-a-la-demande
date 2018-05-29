@@ -99,7 +99,7 @@ block content
 
 
   .row
-    if agadirDone
+    -if (agadirDone.length !== 0)
       .col-5.offset-1(style="border-width:5px;border-style:groove;margin-top:20px")
         .row
           .col-8
@@ -133,8 +133,8 @@ block content
 
 
 
-    if casablancaDone
-      .col-5(style="border-width:5px;border-style:groove;margin-top:20px")
+    -if (casablancaDone.length !== 0)
+      .col-5.offset-1(style="border-width:5px;border-style:groove;margin-top:20px")
         .row
           .col-8
             h6  Casablanca
@@ -166,7 +166,7 @@ block content
                 td  #{adresses[0][casablancaSite[i]]}
 
 
-    if marrakechDone
+    -if (marrakechDone.length !== 0)
       .col-5.offset-1(style="border-width:5px;border-style:groove;margin-top:20px")
         .row
           .col-8
@@ -200,8 +200,8 @@ block content
 
 
 
-    if meknesDone
-      .col-5(style="border-width:5px;border-style:groove;margin-top:20px")
+    -if (meknesDone !== 0)
+      .col-5.offset-1(style="border-width:5px;border-style:groove;margin-top:20px")
         .row
           .col-8
             h6  Meknes
@@ -234,7 +234,7 @@ block content
 
 
 
-    if oujdaDone
+    -if (oujdaDone.length !== 0)
       .col-5.offset-1(style="border-width:5px;border-style:groove;margin-top:20px")
         .row
           .col-8
@@ -268,8 +268,8 @@ block content
 
 
 
-    if rabatDone
-      .col-5(style="border-width:5px;border-style:groove;margin-top:20px")
+    -if (rabatDone.length !== 0)
+      .col-5.offset-1(style="border-width:5px;border-style:groove;margin-top:20px")
         .row
           .col-8
             h6  Rabat
@@ -302,7 +302,7 @@ block content
 
 
 
-    if tangerDone
+    -if (tangerDone.length !== 0)
       .col-5.offset-1(style="border-width:5px;border-style:groove;margin-top:20px")
         .row
           .col-8

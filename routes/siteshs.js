@@ -5,24 +5,20 @@ const xlsxtojson = require('xlsx-to-json-lc');
 const xlstojson = require('xls-to-json-lc');
 const fs =require('fs');
 
-var results;
-var results_ericsson;
-var agadir;
-var casablanca;
-var marrakech;
-var meknes;
-var oujda;
-var rabat;
-var tanger;
-var classif;
-var nomination_erric;
-var nomination_erric_2;
-var adresses
+
+
+var agadir,casablanca,marrakech,meknes,oujda,rabat,tanger;
+var classif,results,results_ericsson,nomination_erric,nomination_erric_2,adresses;
+
+
+
 /*fs.readFile('json/Classification/classif.json','utf-8',(err,data)=>{
   if(err)  console.log("impossible de lire le fichier des classifications :\n"+err);
   classif=data;
 });
 */
+
+
 fs.readFile('json/adresse.json','utf-8',(err,data)=>{
   if(err) console.log("error occured while reading the classif_erric's json file : \n"+err);
   adresses=JSON.parse(data);
@@ -95,7 +91,7 @@ var upload = multer({
 
 
 
-//route.use(upload());
+
 route.get("/upload",(req,res,next)=>{
   res.render("siteshs/upload");
 });
@@ -125,28 +121,13 @@ route.post('/upload',function(req,res,next){
           if(err) {
             return res.json({error_code:1,err_desc:err, data: null});
           }
-          //res.json({error_code:0,err_desc:null, data: result});
-        //  res.render("siteshs/type-du-rapport",{
         results=result;
         res.redirect("/siteshs/classification")
-      /*  res.render("siteshs/rapport-par-villes",{
-            //data:result,
-            alarms:result,
-            agadir:agadir,
-            casablanca:casablanca,
-            marrakech:marrakech,
-            meknes:meknes,
-            oujda:oujda,
-            rabat:rabat,
-            tanger:tanger
-          });*/
         });
     } catch (e){
       res.json({error_code:1,err_desc:"Corupted excel file"});
     }
   });
-  //  console.log(req.file);
-  //  res.render("siteshs/type-du-rapport");
 })
 
 route.get("/upload_ericsson",(req,res,next)=>{
@@ -178,8 +159,6 @@ route.post('/upload_ericsson',function(req,res,next){
           if(err) {
             return res.json({error_code:1,err_desc:err, data: null});
           }
-          //res.json({error_code:0,err_desc:null, data: result});
-        //  res.render("siteshs/type-du-rapport",{
         results_ericsson=result;
         res.redirect("/siteshs/classificationeric")
         });
@@ -187,8 +166,6 @@ route.post('/upload_ericsson',function(req,res,next){
       res.json({error_code:1,err_desc:"Corupted excel file"});
     }
   });
-  //  console.log(req.file);
-  //  res.render("siteshs/type-du-rapport");
 })
 
 
@@ -243,32 +220,18 @@ route.post('/classification',function(req,res,next){
 })
 
 
-/*
 
-route.get("/site/:siteID/:vender",(req,res,next)=>{
+
+route.get("/huawei_:siteID",(req,res,next)=>{
   res.render("siteshs/site-hs",
   {
     alarms:results,
-    alarm_ericson:results_ericsson,
     classification:classif,
-    nomination_erric : nomination_erric,
-    nomination_erric_2 : nomination_erric_2,
-    site:req.params.siteID,
-    vender:req.params.vender
+    adresses:adresses,
+    site:req.params.siteID
   })
 });
 
-
-route.get("/secteur/:secteurID",(req,res,next)=>{
-  var secteurID = req.params.secteurID;
-  res.render("siteshs/secteur-hs",{
-    alarms:results,
-    alarm_ericson:results_ericsson,
-    classification:classif,
-    secteur:secteurID
-  })
-});
-*/
 
 route.get("/classificationeric",(req,res,next)=>{
   res.render("manage/miseajourclassiferic");

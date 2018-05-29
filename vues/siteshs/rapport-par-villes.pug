@@ -3,640 +3,2081 @@ extends ../layout
 block content
   if alarms
     -console.log("-------------------------\n-------------------------")
-    -var agadirDone=[],casablancaDone=[],marrakechDone=[],meknesDone=[],oujdaDone=[],rabatDone=[],tangerDone=[]
-    -var agadiralarms=[],casablancaalarms=[],marrakechalarms=[],meknesalarms=[],oujdaalarms=[],rabatalarms=[],tangeralarms=[]
-    -var agadiralarmsUp=[],casablancaalarmsUp=[],marrakechalarmsUp=[],meknesalarmsUp=[],oujdaalarmsUp=[],rabatalarmsUp=[],tangeralarmsUp=[]
-    -var nbrsitesagadirHS=0,nbrsitescasablancaHS=0,nbrsitesmarrakechHS=0,nbrsitesmeknesHS=0,nbrsitesoujdaHS=0,nbrsitesrabatHS=0,nbrsitestangerHS=0
-    -var nbrsitesagadirresolu=0,nbrsitescasablancaresolu=0,nbrsitesmarrakechresolu=0,nbrsitesmeknesresolu=0,nbrsitesoujdaresolu=0,nbrsitesrabatresolu=0,nbrsitestangerresolu=0
+    -var agadirDone=[],casablancaDone=[],marrakechDone=[],meknesDone=[],oujdaDone=[],rabatDone=[],tangerDone=[],autreDone=[]
+    -var agadirDoneUp=[],casablancaDoneUp=[],marrakechDoneUp=[],meknesDoneUp=[],oujdaDoneUp=[],rabatDoneUp=[],tangerDoneUp=[],autreDoneUp=[]
+    -var agadiralarms=[],casablancaalarms=[],marrakechalarms=[],meknesalarms=[],oujdaalarms=[],rabatalarms=[],tangeralarms=[],autrealarms=[]
+    -var agadiralarmsUp=[],casablancaalarmsUp=[],marrakechalarmsUp=[],meknesalarmsUp=[],oujdaalarmsUp=[],rabatalarmsUp=[],tangeralarmsUp=[],autrealarmsUp=[]
+    -var nbrsitesagadirHS=0,nbrsitescasablancaHS=0,nbrsitesmarrakechHS=0,nbrsitesmeknesHS=0,nbrsitesoujdaHS=0,nbrsitesrabatHS=0,nbrsitestangerHS=0,nbrsitesautreHS=0
+    -var nbrsitesagadirresolu=0,nbrsitescasablancaresolu=0,nbrsitesmarrakechresolu=0,nbrsitesmeknesresolu=0,nbrsitesoujdaresolu=0,nbrsitesrabatresolu=0,nbrsitestangerresolu=0,nbrsitesautreresolu=0
+    -var agadir2G=0,casablanca2G=0,marrakech2G=0,meknes2G=0,oujda2G=0,rabat2G=0,tanger2G=0,autre2G=0;
+    -var agadir3G=0,casablanca3G=0,marrakech3G=0,meknes3G=0,oujda3G=0,rabat3G=0,tanger3G=0,autre3G=0;
+    -var agadir4G=0,casablanca4G=0,marrakech4G=0,meknes4G=0,oujda4G=0,rabat4G=0,tanger4G=0,autre4G=0;
+    -var nbrsitesAUp=0,nbrsitesBUp=0,nbrsitesCUp=0,nbrsitesDUp=0;
+    -var nbrsitesADown=0,nbrsitesBDown=0,nbrsitesCDown=0,nbrsitesDDown=0;
+    -var classeALength=0,classeBLength=0,classeCLength=0,classeDLength=0;
     each alarm, al in alarms
+      -var ND = false
       -var done = false
-      -var villeVar =  alarm["location information"].match(/[A-Z]{3}-\d{2,4}/i) || alarm["mo name"].match(/[A-Z]{3}-\d{2,4}/i)
-      -if(villeVar!=null)
+      -var codesite = alarm["mo name"].match(/[A-Z]{3}-\d{2,4}_[A-Z]{1,}_{0,}[A-Z]{0,}/i)
+      -var villeVar =  alarm["location information"].match(/[A-Z]{3}-\d{2,4}/i) || alarm["mo name"].match(/[A-Z-a-z]{3}-\d{2,4}/i)
+      -if(codesite !== null)
+        -if( codesite[0].charAt(codesite[0].length-1) == "N" || codesite[0].charAt(codesite[0].length-1) == "D" || codesite[0].charAt(codesite[0].length-1) == "d")
+          -ND = true
+          
+      -if((villeVar!=null) && (ND == false))
         -var index = agadir.indexOf(villeVar[0])
         -if(index !== -1)
+          -done = true
           -var indexDone = agadirDone.indexOf(villeVar[0])
           -if(indexDone == -1)
-            -var alarmname = alarm["name"]
-            -var arr=["NodeB Unavailable","OML Fault","NE Is Disconnected"]
-            -if(arr.indexOf(alarmname)!==-1)
-              -agadirDone.push(villeVar[0])
-              -if(alarm["clearance status"]=="Cleared")
-                -nbrsitesagadirresolu++
-                -agadiralarmsUp.push(alarm)
-              -if(alarm["clearance status"]=="-")
-                -agadiralarms.push(alarm)
+            -if(alarm["clearance status"]=="-")
+              -var temp = {}
+              -temp.code = villeVar[0]
+              -var alarmname = alarm["name"]
+              -var tech=""
+              -if(alarmname == "NodeB Unavailable")
+                -tech="3G"
+                -agadir3G++
+              -if(alarmname == "OML Fault")
+                -tech="2G"
+                -agadir2G++
+              -if(alarmname == "NE Is Disconnected")
+                -tech="4G"
+                -agadir4G++
+              -if(tech !== "")
+                -temp.technology=tech
+                -var date1 = alarm["first occurred (nt)"]
+                -var date2 = alarm["last occurred (nt)"]
+                -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                -temp.delais = (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                -temp.date_debut=date1
+                -agadiralarms[villeVar[0]]=temp
+                -agadirDone.push(villeVar[0])
                 -nbrsitesagadirHS++
-              -done = true
-        if(!done)
+
+
+          -if(indexDone !== -1)
+            -if(alarm["clearance status"]=="-")
+              -var alarmname = alarm["name"]
+              -var tech = agadiralarms[villeVar[0]]["technology"]
+              -if(alarmname == "NodeB Unavailable")
+                -var date1 = alarm["first occurred (nt)"]
+                -agadir3G++
+                -var date2 = alarm["last occurred (nt)"]
+                -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                -agadiralarms[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                -if(tech.indexOf("3G") == -1)
+                  -agadiralarmsUp[villeVar[0]]["technology"] += "/3G"
+
+              -if(alarmname == "OML Fault")
+                -var date1 = alarm["first occurred (nt)"]
+                -agadir2G++
+                -var date2 = alarm["last occurred (nt)"]
+                -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                -agadiralarms[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                -if(tech.indexOf("2G") == -1)
+                  -agadiralarmsUp[villeVar[0]]["technology"] += "/2G"
+
+              -if(alarmname == "NE Is Disconnected")
+                -var date1 = alarm["first occurred (nt)"]
+                -agadir4G++
+                -var date2 = alarm["last occurred (nt)"]
+                -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                -agadiralarms[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                -if(tech.indexOf("4G") == -1)
+                  -agadiralarmsUp[villeVar[0]]["technology"] += "/4G"
+
+
+
+          -var indexDone = agadirDoneUp.indexOf(villeVar[0])
+          -if(indexDone == -1)
+            -if(alarm["clearance status"]=="Cleared")
+              -var temp = {}
+              -temp.code = villeVar[0]
+              -var alarmname = alarm["name"]
+              -var tech=""
+              -if(alarmname == "NodeB Unavailable")
+                -tech="3G"
+              -if(alarmname == "OML Fault")
+                -tech="2G"
+              -if(alarmname == "NE Is Disconnected")
+                -tech="4G"
+              -if(tech !== "")
+                -temp.technology=tech
+                -temp.numberOfOccurences=1
+                -temp.date_debut=alarm["first occurred (nt)"]
+                -temp.date_fin=alarm["cleared on (nt)"]
+                -var date1 = alarm["first occurred (nt)"]
+                -var date2 = alarm["cleared on (nt)"]
+                -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                -temp.delais = (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+
+                -agadiralarmsUp[villeVar[0]]=temp
+                -agadirDoneUp.push(villeVar[0])
+                -nbrsitesagadirresolu++
+
+          -if(indexDone !== -1)
+            -if(alarm["clearance status"]=="Cleared")
+              -var alarmname = alarm["name"]
+              -var tech = agadiralarmsUp[villeVar[0]]["technology"]
+              -if(alarmname == "NodeB Unavailable")
+                -agadiralarmsUp[villeVar[0]]["numberOfOccurences"]++
+                -var date1 = alarm["first occurred (nt)"]
+                -var date2 = alarm["cleared on (nt)"]
+                -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                -agadiralarmsUp[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                -if(tech.indexOf("3G") == -1)
+                  -agadiralarmsUp[villeVar[0]]["technology"] += "/3G"
+
+              -if(alarmname == "OML Fault")
+                -agadiralarmsUp[villeVar[0]]["numberOfOccurences"]++
+                -var date1 = alarm["first occurred (nt)"]
+                -var date2 = alarm["cleared on (nt)"]
+                -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                -agadiralarmsUp[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                -if(tech.indexOf("2G") == -1)
+                  -agadiralarmsUp[villeVar[0]]["technology"] += "/2G"
+
+              -if(alarmname == "NE Is Disconnected")
+                -agadiralarmsUp[villeVar[0]]["numberOfOccurences"]++
+                -var date1 = alarm["first occurred (nt)"]
+                -var date2 = alarm["cleared on (nt)"]
+                -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                -agadiralarmsUp[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                -if(tech.indexOf("4G") == -1)
+                  -agadiralarmsUp[villeVar[0]]["technology"] += "/4G"
+
+
+
+        -if(!done)
           -var index = casablanca.indexOf(villeVar[0])
           -if(index !== -1)
+            -done = true
             -var indexDone = casablancaDone.indexOf(villeVar[0])
             -if(indexDone == -1)
-              -var alarmname = alarm["name"]
-              -var arr=["NodeB Unavailable","OML Fault","NE Is Disconnected"]
-              -if(arr.indexOf(alarmname)!==-1)
-                -casablancaDone.push(villeVar[0])
-                -if(alarm["clearance status"]=="Cleared")
-                  -nbrsitescasablancaresolu++
-                  -casablancaalarmsUp.push(alarm)
-                -if(alarm["clearance status"]=="-")
-                  -casablancaalarms.push(alarm)
+              -if(alarm["clearance status"]=="-")
+                -var temp = {}
+                -temp.code = villeVar[0]
+                -var alarmname = alarm["name"]
+                -var tech=""
+                -if(alarmname == "NodeB Unavailable")
+                  -tech="3G"
+                  -casablanca3G++
+                -if(alarmname == "OML Fault")
+                  -tech="2G"
+                  -casablanca2G++
+                -if(alarmname == "NE Is Disconnected")
+                  -tech="4G"
+                  -casablanca4G++
+                -if(tech !== "")
+                  -temp.technology=tech
+                  -var date1 = alarm["first occurred (nt)"]
+                  -var date2 = alarm["last occurred (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -temp.delais = (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -temp.date_debut=date1
+                  -casablancaalarms[villeVar[0]]=temp
+                  -casablancaDone.push(villeVar[0])
                   -nbrsitescasablancaHS++
-                -done = true
-        if(!done)
+
+
+            -if(indexDone !== -1)
+              -if(alarm["clearance status"]=="-")
+                -var alarmname = alarm["name"]
+                -var tech = casablancaalarms[villeVar[0]]["technology"]
+                -if(alarmname == "NodeB Unavailable")
+                  -var date1 = alarm["first occurred (nt)"]
+                  -casablanca3G++
+                  -var date2 = alarm["last occurred (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -casablancaalarms[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("3G") == -1)
+                    -casablancaalarmsUp[villeVar[0]]["technology"] += "/3G"
+
+                -if(alarmname == "OML Fault")
+                  -var date1 = alarm["first occurred (nt)"]
+                  -casablanca2G++
+                  -var date2 = alarm["last occurred (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -casablancaalarms[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("2G") == -1)
+                    -casablancaalarmsUp[villeVar[0]]["technology"] += "/2G"
+
+                -if(alarmname == "NE Is Disconnected")
+                  -var date1 = alarm["first occurred (nt)"]
+                  -casablanca4G++
+                  -var date2 = alarm["last occurred (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -casablancalarms[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("4G") == -1)
+                    -casablancalarmsUp[villeVar[0]]["technology"] += "/4G"
+
+
+
+            -var indexDone = casablancaDoneUp.indexOf(villeVar[0])
+            -if(indexDone == -1)
+              -if(alarm["clearance status"]=="Cleared")
+                -var temp = {}
+                -temp.code = villeVar[0]
+                -var alarmname = alarm["name"]
+                -var tech=""
+                -if(alarmname == "NodeB Unavailable")
+                  -tech="3G"
+                -if(alarmname == "OML Fault")
+                  -tech="2G"
+                -if(alarmname == "NE Is Disconnected")
+                  -tech="4G"
+                -if(tech !== "")
+                  -temp.technology=tech
+                  -temp.numberOfOccurences=1
+                  -temp.date_debut=alarm["first occurred (nt)"]
+                  -temp.date_fin=alarm["cleared on (nt)"]
+                  -var date1 = alarm["first occurred (nt)"]
+                  -var date2 = alarm["cleared on (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -temp.delais = (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -casablancaalarmsUp[villeVar[0]]=temp
+                  -casablancaDoneUp.push(villeVar[0])
+                  -nbrsitescasablancaresolu++
+
+            -if(indexDone !== -1)
+              -if(alarm["clearance status"]=="Cleared")
+                -var alarmname = alarm["name"]
+                -var tech = casablancaalarmsUp[villeVar[0]]["technology"]
+                -if(alarmname == "NodeB Unavailable")
+                  -casablancaalarmsUp[villeVar[0]]["numberOfOccurences"]++
+                  -var date1 = alarm["first occurred (nt)"]
+                  -var date2 = alarm["cleared on (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -casablancaalarmsUp[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("3G") == -1)
+                    -casablancaalarmsUp[villeVar[0]]["technology"] += "/3G"
+
+                -if(alarmname == "OML Fault")
+                  -casablancaalarmsUp[villeVar[0]]["numberOfOccurences"]++
+                  -var date1 = alarm["first occurred (nt)"]
+                  -var date2 = alarm["cleared on (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -casablancaalarmsUp[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("2G") == -1)
+                    -casablancaalarmsUp[villeVar[0]]["technology"] += "/2G"
+
+                -if(alarmname == "NE Is Disconnected")
+                  -casablancaalarmsUp[villeVar[0]]["numberOfOccurences"]++
+                  -var date1 = alarm["first occurred (nt)"]
+                  -var date2 = alarm["cleared on (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -casablancaalarmsUp[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("4G") == -1)
+                    -casablancaalarmsUp[villeVar[0]]["technology"] += "/4G"
+
+
+
+        -if(!done)
           -var index = marrakech.indexOf(villeVar[0])
           -if(index !== -1)
+            -done = true
             -var indexDone = marrakechDone.indexOf(villeVar[0])
             -if(indexDone == -1)
-              -var alarmname = alarm["name"]
-              -var arr=["NodeB Unavailable","OML Fault","NE Is Disconnected"]
-              -if(arr.indexOf(alarmname)!==-1)
-                -marrakechDone.push(villeVar[0])
-                -if(alarm["clearance status"]=="Cleared")
-                  -nbrsitesmarrakechresolu++
-                  -marrakechalarmsUp.push(alarm)
-                -if(alarm["clearance status"]=="-")
-                  -marrakechalarms.push(alarm)
+              -if(alarm["clearance status"]=="-")
+                -var temp = {}
+                -temp.code = villeVar[0]
+                -var alarmname = alarm["name"]
+                -var tech=""
+                -if(alarmname == "NodeB Unavailable")
+                  -tech="3G"
+                  -marrakech3G++
+                -if(alarmname == "OML Fault")
+                  -tech="2G"
+                  -marrakech2G++
+                -if(alarmname == "NE Is Disconnected")
+                  -tech="4G"
+                  -marrakech4G++
+                -if(tech !== "")
+                  -temp.technology=tech
+                  -var date1 = alarm["first occurred (nt)"]
+                  -var date2 = alarm["last occurred (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -temp.delais = (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -temp.date_debut=date1
+                  -marrakechalarms[villeVar[0]]=temp
+                  -marrakechDone.push(villeVar[0])
                   -nbrsitesmarrakechHS++
-                -done = true
-        if(!done)
+
+
+            -if(indexDone !== -1)
+              -if(alarm["clearance status"]=="-")
+                -var alarmname = alarm["name"]
+                -var tech = marrakechalarms[villeVar[0]]["technology"]
+                -if(alarmname == "NodeB Unavailable")
+                  -var date1 = alarm["first occurred (nt)"]
+                  -marrakech3G++
+                  -var date2 = alarm["last occurred (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -marrakechalarms[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("3G") == -1)
+                    -marrakechalarmsUp[villeVar[0]]["technology"] += "/3G"
+
+                -if(alarmname == "OML Fault")
+                  -var date1 = alarm["first occurred (nt)"]
+                  -marrakech2G++
+                  -var date2 = alarm["last occurred (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -marrakechalarms[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("2G") == -1)
+                    -marrakechalarmsUp[villeVar[0]]["technology"] += "/2G"
+
+                -if(alarmname == "NE Is Disconnected")
+                  -var date1 = alarm["first occurred (nt)"]
+                  -marrakech4G++
+                  -var date2 = alarm["last occurred (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -marrakechlarms[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("4G") == -1)
+                    -marrakechlarmsUp[villeVar[0]]["technology"] += "/4G"
+
+            -var indexDone = marrakechDoneUp.indexOf(villeVar[0])
+            -if(indexDone == -1)
+              -if(alarm["clearance status"]=="Cleared")
+                -var temp = {}
+                -temp.code = villeVar[0]
+                -var alarmname = alarm["name"]
+                -var tech=""
+                -if(alarmname == "NodeB Unavailable")
+                  -tech="3G"
+                -if(alarmname == "OML Fault")
+                  -tech="2G"
+                -if(alarmname == "NE Is Disconnected")
+                  -tech="4G"
+                -if(tech !== "")
+                  -temp.technology=tech
+                  -temp.numberOfOccurences=1
+                  -temp.date_debut=alarm["first occurred (nt)"]
+                  -temp.date_fin=alarm["cleared on (nt)"]
+                  -var date1 = alarm["first occurred (nt)"]
+                  -var date2 = alarm["cleared on (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -temp.delais = (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -marrakechalarmsUp[villeVar[0]]=temp
+                  -marrakechDoneUp.push(villeVar[0])
+                  -nbrsitesmarrakechresolu++
+
+            -if(indexDone !== -1)
+              -if(alarm["clearance status"]=="Cleared")
+                -var alarmname = alarm["name"]
+                -var tech = marrakechalarmsUp[villeVar[0]]["technology"]
+                -if(alarmname == "NodeB Unavailable")
+                  -marrakechalarmsUp[villeVar[0]]["numberOfOccurences"]++
+                  -var date1 = alarm["first occurred (nt)"]
+                  -var date2 = alarm["cleared on (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -marrakechalarmsUp[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("3G") == -1)
+                    -marrakechalarmsUp[villeVar[0]]["technology"] += "/3G"
+
+                -if(alarmname == "OML Fault")
+                  -marrakechalarmsUp[villeVar[0]]["numberOfOccurences"]++
+                  -var date1 = alarm["first occurred (nt)"]
+                  -var date2 = alarm["cleared on (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -marrakechalarmsUp[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("2G") == -1)
+                    -marrakechalarmsUp[villeVar[0]]["technology"] += "/2G"
+
+                -if(alarmname == "NE Is Disconnected")
+                  -marrakechalarmsUp[villeVar[0]]["numberOfOccurences"]++
+                  -var date1 = alarm["first occurred (nt)"]
+                  -var date2 = alarm["cleared on (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -marrakechalarmsUp[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("4G") == -1)
+                    -marrakechalarmsUp[villeVar[0]]["technology"] += "/4G"
+
+
+        -if(!done)
           -var index = meknes.indexOf(villeVar[0])
           -if(index !== -1)
+            -done = true
             -var indexDone = meknesDone.indexOf(villeVar[0])
             -if(indexDone == -1)
-              -var alarmname = alarm["name"]
-              -var arr=["NodeB Unavailable","OML Fault","NE Is Disconnected"]
-              -if(arr.indexOf(alarmname)!==-1)
-                -meknesDone.push(villeVar[0])
-                -if(alarm["clearance status"]=="Cleared")
-                  -nbrsitesmeknesresolu++
-                  -meknesalarmsUp.push(alarm)
-                -if(alarm["clearance status"]=="-")
-                  -meknesalarms.push(alarm)
+              -if(alarm["clearance status"]=="-")
+                -var temp = {}
+                -temp.code = villeVar[0]
+                -var alarmname = alarm["name"]
+                -var tech=""
+                -if(alarmname == "NodeB Unavailable")
+                  -tech="3G"
+                  -meknes3G++
+                -if(alarmname == "OML Fault")
+                  -tech="2G"
+                  -meknes2G++
+                -if(alarmname == "NE Is Disconnected")
+                  -tech="4G"
+                  -meknes4G++
+                -if(tech !== "")
+                  -temp.technology=tech
+                  -var date1 = alarm["first occurred (nt)"]
+                  -var date2 = alarm["last occurred (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -temp.delais = (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -temp.date_debut=date1
+                  -meknesalarms[villeVar[0]]=temp
+                  -meknesDone.push(villeVar[0])
                   -nbrsitesmeknesHS++
-                -done = true
-        if(!done)
+
+
+            -if(indexDone !== -1)
+              -if(alarm["clearance status"]=="-")
+                -var alarmname = alarm["name"]
+                -var tech = meknesalarms[villeVar[0]]["technology"]
+                -if(alarmname == "NodeB Unavailable")
+                  -var date1 = alarm["first occurred (nt)"]
+                  -meknes3G++
+                  -var date2 = alarm["last occurred (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -meknesalarms[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("3G") == -1)
+                    -meknesalarmsUp[villeVar[0]]["technology"] += "/3G"
+
+                -if(alarmname == "OML Fault")
+                  -var date1 = alarm["first occurred (nt)"]
+                  -meknes2G++
+                  -var date2 = alarm["last occurred (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -meknesalarms[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("2G") == -1)
+                    -meknesalarmsUp[villeVar[0]]["technology"] += "/2G"
+
+                -if(alarmname == "NE Is Disconnected")
+                  -var date1 = alarm["first occurred (nt)"]
+                  -meknes4G++
+                  -var date2 = alarm["last occurred (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -mekneslarms[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("4G") == -1)
+                    -mekneslarmsUp[villeVar[0]]["technology"] += "/4G"
+
+
+            -var indexDone = meknesDoneUp.indexOf(villeVar[0])
+            -if(indexDone == -1)
+              -if(alarm["clearance status"]=="Cleared")
+                -var temp = {}
+                -temp.code = villeVar[0]
+                -var alarmname = alarm["name"]
+                -var tech=""
+                -if(alarmname == "NodeB Unavailable")
+                  -tech="3G"
+                -if(alarmname == "OML Fault")
+                  -tech="2G"
+                -if(alarmname == "NE Is Disconnected")
+                  -tech="4G"
+                -if(tech !== "")
+                  -temp.technology=tech
+                  -temp.numberOfOccurences=1
+                  -temp.date_debut=alarm["first occurred (nt)"]
+                  -temp.date_fin=alarm["cleared on (nt)"]
+                  -var date1 = alarm["first occurred (nt)"]
+                  -var date2 = alarm["cleared on (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -temp.delais = (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -meknesalarmsUp[villeVar[0]]=temp
+                  -meknesDoneUp.push(villeVar[0])
+                  -nbrsitesmeknesresolu++
+
+            -if(indexDone !== -1)
+              -if(alarm["clearance status"]=="Cleared")
+                -var alarmname = alarm["name"]
+                -var tech = meknesalarmsUp[villeVar[0]]["technology"]
+                -if(alarmname == "NodeB Unavailable")
+                  -meknesalarmsUp[villeVar[0]]["numberOfOccurences"]++
+                  -var date1 = alarm["first occurred (nt)"]
+                  -var date2 = alarm["cleared on (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -meknesalarmsUp[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("3G") == -1)
+                    -meknesalarmsUp[villeVar[0]]["technology"] += "/3G"
+
+                -if(alarmname == "OML Fault")
+                  -meknesalarmsUp[villeVar[0]]["numberOfOccurences"]++
+                  -var date1 = alarm["first occurred (nt)"]
+                  -var date2 = alarm["cleared on (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -meknesalarmsUp[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("2G") == -1)
+                    -meknesalarmsUp[villeVar[0]]["technology"] += "/2G"
+
+                -if(alarmname == "NE Is Disconnected")
+                  -meknesalarmsUp[villeVar[0]]["numberOfOccurences"]++
+                  -var date1 = alarm["first occurred (nt)"]
+                  -var date2 = alarm["cleared on (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -meknesalarmsUp[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("4G") == -1)
+                    -meknesalarmsUp[villeVar[0]]["technology"] += "/4G"
+
+
+
+        -if(!done)
           -var index = oujda.indexOf(villeVar[0])
           -if(index !== -1)
+            -done = true
             -var indexDone = oujdaDone.indexOf(villeVar[0])
             -if(indexDone == -1)
-              -var alarmname = alarm["name"]
-              -var arr=["NodeB Unavailable","OML Fault","NE Is Disconnected"]
-              -if(arr.indexOf(alarmname)!==-1)
-                -oujdaDone.push(villeVar[0])
-                -if(alarm["clearance status"]=="Cleared")
-                  -nbrsitesoujdaresolu++
-                  -oujdaalarmsUp.push(alarm)
-                -if(alarm["clearance status"]=="-")
-                  -oujdaalarms.push(alarm)
+              -if(alarm["clearance status"]=="-")
+                -var temp = {}
+                -temp.code = villeVar[0]
+                -var alarmname = alarm["name"]
+                -var tech=""
+                -if(alarmname == "NodeB Unavailable")
+                  -tech="3G"
+                  -oujda3G++
+                -if(alarmname == "OML Fault")
+                  -tech="2G"
+                  -oujda2G++
+                -if(alarmname == "NE Is Disconnected")
+                  -tech="4G"
+                  -oujda4G++
+                -if(tech !== "")
+                  -temp.technology=tech
+                  -var date1 = alarm["first occurred (nt)"]
+                  -var date2 = alarm["last occurred (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -temp.delais = (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -temp.date_debut=date1
+                  -oujdaalarms[villeVar[0]]=temp
+                  -oujdaDone.push(villeVar[0])
                   -nbrsitesoujdaHS++
-                -done = true
-        if(!done)
+
+
+            -if(indexDone !== -1)
+              -if(alarm["clearance status"]=="-")
+                -var alarmname = alarm["name"]
+                -var tech = oujdaalarms[villeVar[0]]["technology"]
+                -if(alarmname == "NodeB Unavailable")
+                  -var date1 = alarm["first occurred (nt)"]
+                  -oujda3G++
+                  -var date2 = alarm["last occurred (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -oujdaalarms[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("3G") == -1)
+                    -oujdaalarmsUp[villeVar[0]]["technology"] += "/3G"
+
+                -if(alarmname == "OML Fault")
+                  -var date1 = alarm["first occurred (nt)"]
+                  -oujda2G++
+                  -var date2 = alarm["last occurred (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -oujdaalarms[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("2G") == -1)
+                    -oujdaalarmsUp[villeVar[0]]["technology"] += "/2G"
+
+                -if(alarmname == "NE Is Disconnected")
+                  -var date1 = alarm["first occurred (nt)"]
+                  -oujda4G++
+                  -var date2 = alarm["last occurred (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -oujdalarms[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("4G") == -1)
+                    -oujdalarmsUp[villeVar[0]]["technology"] += "/4G"
+
+
+
+
+            -var indexDone = oujdaDoneUp.indexOf(villeVar[0])
+            -if(indexDone == -1)
+              -if(alarm["clearance status"]=="Cleared")
+                -var temp = {}
+                -temp.code = villeVar[0]
+                -var alarmname = alarm["name"]
+                -var tech=""
+                -if(alarmname == "NodeB Unavailable")
+                  -tech="3G"
+                -if(alarmname == "OML Fault")
+                  -tech="2G"
+                -if(alarmname == "NE Is Disconnected")
+                  -tech="4G"
+                -if(tech !== "")
+                  -temp.technology=tech
+                  -temp.numberOfOccurences=1
+                  -temp.date_debut=alarm["first occurred (nt)"]
+                  -temp.date_fin=alarm["cleared on (nt)"]
+                  -var date1 = alarm["first occurred (nt)"]
+                  -var date2 = alarm["cleared on (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -temp.delais = (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -oujdaalarmsUp[villeVar[0]]=temp
+                  -oujdaDoneUp.push(villeVar[0])
+                  -nbrsitesoujdaresolu++
+
+            -if(indexDone !== -1)
+              -if(alarm["clearance status"]=="Cleared")
+                -var alarmname = alarm["name"]
+                -var tech = oujdaalarmsUp[villeVar[0]]["technology"]
+                -if(alarmname == "NodeB Unavailable")
+                  -oujdaalarmsUp[villeVar[0]]["numberOfOccurences"]++
+                  -var date1 = alarm["first occurred (nt)"]
+                  -var date2 = alarm["cleared on (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -oujdaalarmsUp[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("3G") == -1)
+                    -oujdaalarmsUp[villeVar[0]]["technology"] += "/3G"
+
+                -if(alarmname == "OML Fault")
+                  -oujdaalarmsUp[villeVar[0]]["numberOfOccurences"]++
+                  -var date1 = alarm["first occurred (nt)"]
+                  -var date2 = alarm["cleared on (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -oujdaalarmsUp[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("2G") == -1)
+                    -oujdaalarmsUp[villeVar[0]]["technology"] += "/2G"
+
+                -if(alarmname == "NE Is Disconnected")
+                  -oujdaalarmsUp[villeVar[0]]["numberOfOccurences"]++
+                  -var date1 = alarm["first occurred (nt)"]
+                  -var date2 = alarm["cleared on (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -oujdaalarmsUp[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("4G") == -1)
+                    -oujdaalarmsUp[villeVar[0]]["technology"] += "/4G"
+
+
+
+        -if(!done)
           -var index = rabat.indexOf(villeVar[0])
           -if(index !== -1)
+            -done = true
             -var indexDone = rabatDone.indexOf(villeVar[0])
             -if(indexDone == -1)
-              -var alarmname = alarm["name"]
-              -var arr=["NodeB Unavailable","OML Fault","NE Is Disconnected"]
-              -if(arr.indexOf(alarmname)!==-1)
-                -rabatDone.push(villeVar[0])
-                -if(alarm["clearance status"]=="Cleared")
-                  -nbrsitesrabatresolu++
-                  -rabatalarmsUp.push(alarm)
-                -if(alarm["clearance status"]=="-")
-                  -rabatalarms.push(alarm)
+              -if(alarm["clearance status"]=="-")
+                -var temp = {}
+                -temp.code = villeVar[0]
+                -var alarmname = alarm["name"]
+                -var tech=""
+                -if(alarmname == "NodeB Unavailable")
+                  -tech="3G"
+                  -rabat3G++
+                -if(alarmname == "OML Fault")
+                  -tech="2G"
+                  -rabat2G++
+                -if(alarmname == "NE Is Disconnected")
+                  -tech="4G"
+                  -rabat4G++
+                -if(tech !== "")
+                  -temp.technology=tech
+                  -var date1 = alarm["first occurred (nt)"]
+                  -var date2 = alarm["last occurred (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -temp.delais = (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -temp.date_debut=date1
+                  -rabatalarms[villeVar[0]]=temp
+                  -rabatDone.push(villeVar[0])
                   -nbrsitesrabatHS++
-                -done = true
-        if(!done)
+
+            -
+            -if(indexDone !== -1)
+              -if(alarm["clearance status"]=="-")
+                -var alarmname = alarm["name"]
+                -var tech = rabatalarms[villeVar[0]]["technology"]
+                -if(alarmname == "NodeB Unavailable")
+                  -var date1 = alarm["first occurred (nt)"]
+                  -rabat3G++
+                  -var date2 = alarm["last occurred (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -rabatalarms[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("3G") == -1)
+                    -rabatalarmsUp[villeVar[0]]["technology"] += "/3G"
+
+                -if(alarmname == "OML Fault")
+                  -var date1 = alarm["first occurred (nt)"]
+                  -rabat2G++
+                  -var date2 = alarm["last occurred (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -rabatalarms[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("2G") == -1)
+                    -rabatalarmsUp[villeVar[0]]["technology"] += "/2G"
+
+                -if(alarmname == "NE Is Disconnected")
+                  -var date1 = alarm["first occurred (nt)"]
+                  -rabat4G++
+                  -var date2 = alarm["last occurred (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -rabatalarms[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("4G") == -1)
+                    -rabatalarms[villeVar[0]]["technology"] += "/4G"
+
+
+            -var indexDone = rabatDoneUp.indexOf(villeVar[0])
+            -if(indexDone == -1)
+              -if(alarm["clearance status"]=="Cleared")
+                -var temp = {}
+                -temp.code = villeVar[0]
+                -var alarmname = alarm["name"]
+                -var tech=""
+                -if(alarmname == "NodeB Unavailable")
+                  -tech="3G"
+                -if(alarmname == "OML Fault")
+                  -tech="2G"
+                -if(alarmname == "NE Is Disconnected")
+                  -tech="4G"
+                -if(tech !== "")
+                  -temp.technology=tech
+                  -temp.numberOfOccurences=1
+                  -temp.date_debut=alarm["first occurred (nt)"]
+                  -temp.date_fin=alarm["cleared on (nt)"]
+                  -var date1 = alarm["first occurred (nt)"]
+                  -var date2 = alarm["cleared on (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -temp.delais = (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -rabatalarmsUp[villeVar[0]]=temp
+                  -rabatDoneUp.push(villeVar[0])
+                  -nbrsitesrabatresolu++
+
+            -if(indexDone !== -1)
+              -if(alarm["clearance status"]=="Cleared")
+                -var alarmname = alarm["name"]
+                -var tech = rabatalarmsUp[villeVar[0]]["technology"]
+                -if(alarmname == "NodeB Unavailable")
+                  -rabatalarmsUp[villeVar[0]]["numberOfOccurences"]++
+                  -var date1 = alarm["first occurred (nt)"]
+                  -var date2 = alarm["cleared on (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -rabatalarmsUp[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("3G") == -1)
+                    -rabatalarmsUp[villeVar[0]]["technology"] += "/3G"
+
+                -if(alarmname == "OML Fault")
+                  -rabatalarmsUp[villeVar[0]]["numberOfOccurences"]++
+                  -var date1 = alarm["first occurred (nt)"]
+                  -var date2 = alarm["cleared on (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -rabatalarmsUp[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("2G") == -1)
+                    -rabatalarmsUp[villeVar[0]]["technology"] += "/2G"
+
+                -if(alarmname == "NE Is Disconnected")
+                  -rabatalarmsUp[villeVar[0]]["numberOfOccurences"]++
+                  -var date1 = alarm["first occurred (nt)"]
+                  -var date2 = alarm["cleared on (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -rabatalarmsUp[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("4G") == -1)
+                    -rabatalarmsUp[villeVar[0]]["technology"] += "/4G"
+
+
+
+        -if(!done)
           -var index = tanger.indexOf(villeVar[0])
           -if(index !== -1)
+            -done = true
             -var indexDone = tangerDone.indexOf(villeVar[0])
             -if(indexDone == -1)
-              -var alarmname = alarm["name"]
-              -var arr=["NodeB Unavailable","OML Fault","NE Is Disconnected"]
-              -if(arr.indexOf(alarmname)!==-1)
-                -tangerDone.push(villeVar[0])
-                -if(alarm["clearance status"]=="Cleared")
-                  -nbrsitestangerresolu++
-                  -tangeralarmsUp.push(alarm)
-                -if(alarm["clearance status"]=="-")
-                  -tangeralarms.push(alarm)
+              -if(alarm["clearance status"]=="-")
+                -var temp = {}
+                -temp.code = villeVar[0]
+                -var alarmname = alarm["name"]
+                -var tech=""
+                -if(alarmname == "NodeB Unavailable")
+                  -tech="3G"
+                  -tanger3G++
+                -if(alarmname == "OML Fault")
+                  -tech="2G"
+                  -tanger2G++
+                -if(alarmname == "NE Is Disconnected")
+                  -tech="4G"
+                  -tanger4G++
+                -if(tech !== "")
+                  -temp.technology=tech
+                  -var date1 = alarm["first occurred (nt)"]
+                  -var date2 = alarm["last occurred (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -temp.delais = (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -temp.date_debut=date1
+                  -tangeralarms[villeVar[0]]=temp
+                  -tangerDone.push(villeVar[0])
                   -nbrsitestangerHS++
-                -done = true
+
+
+            -if(indexDone !== -1)
+              -if(alarm["clearance status"]=="-")
+                -var alarmname = alarm["name"]
+                -var tech = tangeralarms[villeVar[0]]["technology"]
+                -if(alarmname == "NodeB Unavailable")
+                  -var date1 = alarm["first occurred (nt)"]
+                  -tanger3G++
+                  -var date2 = alarm["last occurred (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -tangeralarms[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("3G") == -1)
+                    -tangeralarms[villeVar[0]]["technology"] += "/3G"
+
+                -if(alarmname == "OML Fault")
+                  -var date1 = alarm["first occurred (nt)"]
+                  -tanger2G++
+                  -var date2 = alarm["last occurred (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -tangeralarms[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("2G") == -1)
+                    -tangeralarms[villeVar[0]]["technology"] += "/2G"
+
+                -if(alarmname == "NE Is Disconnected")
+                  -var date1 = alarm["first occurred (nt)"]
+                  -tanger4G++
+                  -var date2 = alarm["last occurred (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -tangerlarms[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("4G") == -1)
+                    -tangerlarmsUp[villeVar[0]]["technology"] += "/4G"
+
+
+            -var indexDone = tangerDoneUp.indexOf(villeVar[0])
+            -if(indexDone == -1)
+              -if(alarm["clearance status"]=="Cleared")
+                -var temp = {}
+                -temp.code = villeVar[0]
+                -var alarmname = alarm["name"]
+                -var tech=""
+                -if(alarmname == "NodeB Unavailable")
+                  -tech="3G"
+                -if(alarmname == "OML Fault")
+                  -tech="2G"
+                -if(alarmname == "NE Is Disconnected")
+                  -tech="4G"
+                -if(tech !== "")
+                  -temp.technology=tech
+                  -temp.numberOfOccurences=1
+                  -temp.date_debut=alarm["first occurred (nt)"]
+                  -temp.date_fin=alarm["cleared on (nt)"]
+                  -var date1 = alarm["first occurred (nt)"]
+                  -var date2 = alarm["cleared on (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -temp.delais = (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -tangeralarmsUp[villeVar[0]]=temp
+                  -tangerDoneUp.push(villeVar[0])
+                  -nbrsitestangerresolu++
+
+            -if(indexDone !== -1)
+              -if(alarm["clearance status"]=="Cleared")
+                -var alarmname = alarm["name"]
+                -var tech = tangeralarmsUp[villeVar[0]]["technology"]
+                -if(alarmname == "NodeB Unavailable")
+                  -tangeralarmsUp[villeVar[0]]["numberOfOccurences"]++
+                  -var date1 = alarm["first occurred (nt)"]
+                  -var date2 = alarm["cleared on (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -tangeralarmsUp[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("3G") == -1)
+                    -tangeralarmsUp[villeVar[0]]["technology"] += "/3G"
+
+                -if(alarmname == "OML Fault")
+                  -tangeralarmsUp[villeVar[0]]["numberOfOccurences"]++
+                  -var date1 = alarm["first occurred (nt)"]
+                  -var date2 = alarm["cleared on (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -tangeralarmsUp[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("2G") == -1)
+                    -tangeralarmsUp[villeVar[0]]["technology"] += "/2G"
+
+                -if(alarmname == "NE Is Disconnected")
+                  -tangeralarmsUp[villeVar[0]]["numberOfOccurences"]++
+                  -var date1 = alarm["first occurred (nt)"]
+                  -var date2 = alarm["cleared on (nt)"]
+                  -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                  -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                  -tangeralarmsUp[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                  -if(tech.indexOf("4G") == -1)
+                    -tangeralarmsUp[villeVar[0]]["technology"] += "/4G"
 
 
 
-  script(type="text/javascript").
-    function showalarms(id){
-      var divElement = document.getElementById(id);
-      var str = id.substring(0,id.length-2);
-      var str2 = id.substring(id.length-2,id.length);
-
-
-      if(str2=='Up'){
-        var str = id.substring(0,id.length-2);
-        str += "Down";
-      }
-      else{
-      var str = id.substring(0,id.length-4);
-      str += "Up";
-      }
-
-      var divElementToHide = document.getElementById(str)
-      if(divElement.style.display=="none"){
-        divElement.style.display="block";
-        divElementToHide.style.display="none"
-      }
-      else{
-        divElement.style.display="none";
-      }
-    }
 
 
 
 
+        -if(!done)
+          -var indexDone = autreDone.indexOf(villeVar[0])
+          -if(indexDone == -1)
+            -if(alarm["clearance status"]=="-")
+              -var temp = {}
+              -temp.code = villeVar[0]
+              -var alarmname = alarm["name"]
+              -var tech=""
+              -if(alarmname == "NodeB Unavailable")
+                -tech="3G"
+                -autre3G++
+              -if(alarmname == "OML Fault")
+                -tech="2G"
+                -autre2G++
+              -if(alarmname == "NE Is Disconnected")
+                -tech="4G"
+                -autre4G++
+              -if(tech !== "")
+                -temp.technology=tech
+                -var date1 = alarm["first occurred (nt)"]
+                -var date2 = alarm["last occurred (nt)"]
+                -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                -temp.delais = (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                -temp.date_debut=date1
+                -autrealarms[villeVar[0]]=temp
+                -autreDone.push(villeVar[0])
+                -nbrsitesautreHS++
+
+          -if(indexDone !== -1)
+            -if(alarm["clearance status"]=="-")
+              -var alarmname = alarm["name"]
+              -var tech = autrealarms[villeVar[0]]["technology"]
+              -if(alarmname == "NodeB Unavailable")
+                -var date1 = alarm["first occurred (nt)"]
+                -autre3G++
+                -var date2 = alarm["last occurred (nt)"]
+                -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                -autrealarms[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                -if(tech.indexOf("3G") == -1)
+                  -autrealarms[villeVar[0]]["technology"] += "/3G"
+
+              -if(alarmname == "OML Fault")
+                -var date1 = alarm["first occurred (nt)"]
+                -autre2G++
+                -var date2 = alarm["last occurred (nt)"]
+                -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                -autrealarms[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                -if(tech.indexOf("2G") == -1)
+                  -autrealarms[villeVar[0]]["technology"] += "/2G"
+
+              -if(alarmname == "NE Is Disconnected")
+                -var date1 = alarm["first occurred (nt)"]
+                -autre4G++
+                -var date2 = alarm["last occurred (nt)"]
+                -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                -autrelarms[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                -if(tech.indexOf("4G") == -1)
+                  -autrelarmsUp[villeVar[0]]["technology"] += "/4G"
 
 
-  .row
-    if agadirDone
-      .col-5.offset-1(style="border-width:5px;border-style:groove;margin-top:20px")
-        .row
-          .col-6
-            h6  Agadir
-          .col-1
-            button.down(onclick="showalarms('agadirDown')")
-              span  cancel
-          .col-1
-            h6(style="left: 100%;")  #{nbrsitesagadirHS}
-          .col-1
-            button.up(onclick="showalarms('agadirUp')")
-              span  cancel
-          .col-1
-            h6(style="left: 100%;" )  #{nbrsitesagadirresolu}
-        #agadirUp(style="display:none;font-size:11px;")
-          table(style="width:100%;")
-            tr
-              th  Site
-              th  Vendor
-              th  Date de fin
-              th  Classification
-              th  Zone
-            each ag, i in agadiralarmsUp
-              -var siteId = ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)
-              -var codeClassif
-              each cl, i in classification
-                -var cla = cl["site"].toUpperCase()
-                -if(cla==siteId)
-                  -codeClassif=cl["nouvelle classe"]
-                  -break
-                -codeClassif= "NA"
+          -var indexDone = autreDoneUp.indexOf(villeVar[0])
+          -if(indexDone == -1)
+            -if(alarm["clearance status"]=="Cleared")
+              -var temp = {}
+              -temp.code = villeVar[0]
+              -var alarmname = alarm["name"]
+              -var tech=""
+              -if(alarmname == "NodeB Unavailable")
+                -tech="3G"
+              -if(alarmname == "OML Fault")
+                -tech="2G"
+              -if(alarmname == "NE Is Disconnected")
+                -tech="4G"
+              -if(tech !== "")
+                -temp.technology=tech
+                -temp.numberOfOccurences=1
+                -temp.date_debut=alarm["first occurred (nt)"]
+                -temp.date_fin=alarm["cleared on (nt)"]
+                -var date1 = alarm["first occurred (nt)"]
+                -var date2 = alarm["cleared on (nt)"]
+                -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                -temp.delais = (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                -autrealarmsUp[villeVar[0]]=temp
+                -autreDoneUp.push(villeVar[0])
+                -nbrsitesautreresolu++
+
+          -if(indexDone !== -1)
+            -if(alarm["clearance status"]=="Cleared")
+              -var alarmname = alarm["name"]
+              -var tech = autrealarmsUp[villeVar[0]]["technology"]
+              -if(alarmname == "NodeB Unavailable")
+                -autrealarmsUp[villeVar[0]]["numberOfOccurences"]++
+                -var date1 = alarm["first occurred (nt)"]
+                -var date2 = alarm["cleared on (nt)"]
+                -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                -autrealarmsUp[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                -if(tech.indexOf("3G") == -1)
+                  -autrealarmsUp[villeVar[0]]["technology"] += "/3G"
+
+              -if(alarmname == "OML Fault")
+                -autrealarmsUp[villeVar[0]]["numberOfOccurences"]++
+                -var date1 = alarm["first occurred (nt)"]
+                -var date2 = alarm["cleared on (nt)"]
+                -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                -autrealarmsUp[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                -if(tech.indexOf("2G") == -1)
+                  -autrealarmsUp[villeVar[0]]["technology"] += "/2G"
+
+              -if(alarmname == "NE Is Disconnected")
+                -autrealarmsUp[villeVar[0]]["numberOfOccurences"]++
+                -var date1 = alarm["first occurred (nt)"]
+                -var date2 = alarm["cleared on (nt)"]
+                -var j1 = parseInt(date1.substring(3,5)), h1 = parseInt(date1.substring(11,13)) , m1 = parseInt(date1.substring(14,16)) , s1 = parseInt(date1.substring(17,19))
+                -var j2 = parseInt(date2.substring(3,5)), h2 = parseInt(date2.substring(11,13)) , m2 = parseInt(date2.substring(14,16)) , s2 = parseInt(date2.substring(17,19))
+                -autrealarmsUp[villeVar[0]]["delais"] += (j2-j1)*86400 + (h2-h1)*3600 + (m2-m1)*60 + (s2-s1)
+                -if(tech.indexOf("4G") == -1)
+                  -autrealarmsUp[villeVar[0]]["technology"] += "/4G"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  button.down(onclick="showDetail('detail')")
+    span  cancel
+  .container
+    .row#detail
+      if agadirDone
+        .col-5.offset-1(style="border-width:5px;border-style:groove;margin-top:20px")
+          .row
+            .col-6
+              h6  Agadir
+            .col-1
+              button.down(onclick="showalarms('agadirDown')")
+                span  cancel
+            .col-1
+              h6(style="left: 100%;")  #{nbrsitesagadirHS}
+            .col-1
+              button.up(onclick="showalarms('agadirUp')")
+                span  cancel
+            .col-1
+              h6(style="left: 100%;" )  #{nbrsitesagadirresolu}
+          #agadirUp(style="display:none;font-size:11px;")
+            table(style="width:100%;margin: 15px 0;")
               tr
-                td(style="color:green")  #{siteId}
-                td  huawei
-                td  #{ag["cleared on (nt)"]}
-                td  #{codeClassif}
-                td  #{adresses[0][siteId[0]]}
-        #agadirDown(style="display:none;font-size:11px;")
-          table(style="width:100%;")
-            tr
-              th  Site
-              th  Vendor
-              th  Date de fin
-              th  Classification
-              th  Zone
-            each ag, i in agadiralarms
-              -var siteId = ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)
-              -var codeClassif
-              each cl, i in classification
-                -var cla = cl["site"].toUpperCase()
-                -if(cla==siteId)
-                  -codeClassif=cl["nouvelle classe"]
-                  -break
-              tr
-                td(style="color:red")  #{ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)}
-                td  huawei
-                td  #{ag["cleared on (nt)"]}
-                td  #{codeClassif}
-                td  #{adresses[0][siteId[0]]}
-    if casablancaDone
-      .col-5(style="border-width:5px;border-style:groove;margin-top:20px")
-        .row
-          .col-6
-            h6  Casablanca
-          .col-1
-            button.down(onclick="showalarms('casablancaDown')")
-              span  cancel
-          .col-1
-            h6(style="left: 100%;")  #{nbrsitescasablancaHS}
-          .col-1
-            button.up(onclick="showalarms('casablancaUp')")
-              span  cancel
-          .col-1
-            h6(style="left: 100%;" )  #{nbrsitescasablancaresolu}
-        #casablancaUp(style="display:none;font-size:11px;")
-          table(style="width:100%;")
-            tr
-              th  Site
-              th  Vendor
-              th  Date de fin
-              th  Classification
-              th  Zone
-            each ag, i in casablancaalarmsUp
-              -var siteId = ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)
-              -var codeClassif
-              each cl, i in classification
-                -var cla = cl["site"].toUpperCase()
-                -if(cla==siteId)
-                  -codeClassif=cl["nouvelle classe"]
-                  -break
-                -codeClassif= "NA"
-              tr
-                td(style="color:green")  #{siteId}
-                td  huawei
-                td  #{ag["cleared on (nt)"]}
-                td  #{codeClassif}
-                td  #{adresses[0][siteId[0]]}
-        #casablancaDown(style="display:none;font-size:11px;")
-          table(style="width:100%;")
-            tr
-              th  Site
-              th  Vendor
-              th  Date de fin
-              th  Classification
-              th  Zone
-            each ag, i in casablancaalarms
-              -var siteId = ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)
-              -var codeClassif
-              each cl, i in classification
-                -var cla = cl["site"].toUpperCase()
-                -if(cla==siteId)
-                  -codeClassif=cl["nouvelle classe"]
-                  -break
-              tr
-                td(style="color:red")  #{ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)}
-                td  huawei
-                td  #{ag["cleared on (nt)"]}
-                td  #{codeClassif}
-                td  #{adresses[0][siteId[0]]}
-
-
-
-    if marrakechDone
-      .col-5.offset-1(style="border-width:5px;border-style:groove;margin-top:20px")
-        .row
-          .col-6
-            h6  Marrakech
-          .col-1
-            button.down(onclick="showalarms('marrakechDown')")
-              span  cancel
-          .col-1
-            h6(style="left: 100%;")  #{nbrsitesmarrakechHS}
-          .col-1
-            button.up(onclick="showalarms('marrakechUp')")
-              span  cancel
-          .col-1
-            h6(style="left: 100%;" )  #{nbrsitesmarrakechresolu}
-        #marrakechUp(style="display:none;font-size:11px;")
-          table(style="width:100%;")
-            tr
-              th  Site
-              th  Vendor
-              th  Date de fin
-              th  Classification
-              th  Zone
-            each ag, i in marrakechalarmsUp
-              -var siteId = ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)
-              -var codeClassif
-              each cl, i in classification
-                -var cla = cl["site"].toUpperCase()
-                -if(cla==siteId)
-                  -codeClassif=cl["nouvelle classe"]
-                  -break
-                -codeClassif= "NA"
-              tr
-                td(style="color:green")  #{siteId}
-                td  huawei
-                td  #{ag["cleared on (nt)"]}
-                td  #{codeClassif}
-                td  #{adresses[0][siteId[0]]}
-        #marrakechDown(style="display:none;font-size:11px;")
-          table(style="width:100%;")
-            tr
-              th  Site
-              th  Vendor
-              th  Date de fin
-              th  Classification
-              th  Zone
-            each ag, i in marrakechalarms
-              -var siteId = ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)
-              -var codeClassif
-              each cl, i in classification
-                -var cla = cl["site"].toUpperCase()
-                -if(cla==siteId)
-                  -codeClassif=cl["nouvelle classe"]
-                  -break
-              tr
-                td(style="color:red")  #{ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)}
-                td  huawei
-                td  #{ag["cleared on (nt)"]}
-                td  #{codeClassif}
-                td  #{adresses[0][siteId[0]]}
-
-
-
-    if meknesDone
-      .col-5(style="border-width:5px;border-style:groove;margin-top:20px")
-        .row
-          .col-6
-            h6  Meknes
-          .col-1
-            button.down(onclick="showalarms('meknesDown')")
-              span  cancel
-          .col-1
-            h6(style="left: 100%;")  #{nbrsitesmeknesHS}
-          .col-1
-            button.up(onclick="showalarms('meknesUp')")
-              span  cancel
-          .col-1
-            h6(style="left: 100%;" )  #{nbrsitesmeknesresolu}
-        #meknesUp(style="display:none;font-size:11px;")
-          table(style="width:100%;")
-            tr
-              th  Site
-              th  Vendor
-              th  Date de fin
-              th  Classification
-              th  Zone
-            each ag, i in meknesalarmsUp
-              -var siteId = ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)
-              -var codeClassif
-              each cl, i in classification
-                -var cla = cl["site"].toUpperCase()
-                -if(cla==siteId)
-                  -codeClassif=cl["nouvelle classe"]
-                  -break
-                -codeClassif= "NA"
-              tr
-                td(style="color:green")  #{siteId}
-                td  huawei
-                td  #{ag["cleared on (nt)"]}
-                td  #{codeClassif}
-                td  #{adresses[0][siteId[0]]}
-        #meknesDown(style="display:none;font-size:11px;")
-          table(style="width:100%;")
-            tr
-              th  Site
-              th  Vendor
-              th  Date de fin
-              th  Classification
-              th  Zone
-            each ag, i in meknesalarms
-              -var siteId = ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)
-              -var codeClassif
-              each cl, i in classification
-                -var cla = cl["site"].toUpperCase()
-                -if(cla==siteId)
-                  -codeClassif=cl["nouvelle classe"]
-                  -break
-              tr
-                td(style="color:red")  #{ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)}
-                td  huawei
-                td  #{ag["cleared on (nt)"]}
-                td  #{codeClassif}
-                td  #{adresses[0][siteId[0]]}
-
-
-
-    if oujdaDone
-      .col-5.offset-1(style="border-width:5px;border-style:groove;margin-top:20px")
-        .row
-          .col-6
-            h6  Oujda
-          .col-1
-            button.down(onclick="showalarms('oujdaDown')")
-              span  cancel
-          .col-1
-            h6(style="left: 100%;")  #{nbrsitesoujdaHS}
-          .col-1
-            button.up(onclick="showalarms('oujdaUp')")
-              span  cancel
-          .col-1
-            h6(style="left: 100%;" )  #{nbrsitesoujdaresolu}
-        #oujdaUp(style="display:none;font-size:11px;")
-          table(style="width:100%;")
-            tr
-              th  Site
-              th  Vendor
-              th  Date de fin
-              th  Classification
-              th  Zone
-            each ag, i in oujdaalarmsUp
-              -var siteId = ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)
-              -var codeClassif
-              each cl, i in classification
-                -var cla = cl["site"].toUpperCase()
-                -if(cla==siteId)
-                  -codeClassif=cl["nouvelle classe"]
-                  -break
-                -codeClassif= "NA"
-              tr
-                td(style="color:green")  #{siteId}
-                td  huawei
-                td  #{ag["cleared on (nt)"]}
-                td  #{codeClassif}
-                td  #{adresses[0][siteId[0]]}
-        #oujdaDown(style="display:none;font-size:11px;")
-          table(style="width:100%;")
-            tr
-              th  Site
-              th  Vendor
-              th  Date de fin
-              th  Classification
-              th  Zone
-            each ag, i in oujdaalarms
-              -var siteId = ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)
-              -var codeClassif
-              each cl, i in classification
-                -var cla = cl["site"].toUpperCase()
-                -if(cla==siteId)
-                  -codeClassif=cl["nouvelle classe"]
-                  -break
-              tr
-                td(style="color:red")  #{ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)}
-                td  huawei
-                td  #{ag["cleared on (nt)"]}
-                td  #{codeClassif}
-                td  #{adresses[0][siteId[0]]}
-
-
-
-    if rabatDone
-      .col-5(style="border-width:5px;border-style:groove;margin-top:20px")
-        .row
-          .col-6
-            h6  Rabat
-          .col-1
-            button.down(onclick="showalarms('rabatDown')")
-              span  cancel
-          .col-1
-            h6(style="left: 100%;")  #{nbrsitesrabatHS}
-          .col-1
-            button.up(onclick="showalarms('rabatUp')")
-              span  cancel
-          .col-1
-            h6(style="left: 100%;" )  #{nbrsitesrabatresolu}
-        #rabatUp(style="display:none;font-size:11px;")
-          table(style="width:100%;")
-            tr
-              th  Site
-              th  Vendor
-              th  Date de fin
-              th  Classification
-              th  Zone
-            each ag, i in rabatalarmsUp
-              -var siteId = ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)
-              -var codeClassif
-              each cl, i in classification
-                -var cla = cl["site"].toUpperCase()
-                -if(cla==siteId)
-                  -codeClassif=cl["nouvelle classe"]
-                  -break
-                -codeClassif= "NA"
-              tr
-                td(style="color:green")  #{siteId}
-                td  huawei
-                td  #{ag["cleared on (nt)"]}
-                td  #{codeClassif}
-                td  #{adresses[0][siteId[0]]}
-        #rabatDown(style="display:none;font-size:11px;")
-          table(style="width:100%;")
-            tr
-              th  Site
-              th  Vendor
-              th  Date de fin
-              th  Classification
-              th  Zone
-            each ag, i in rabatalarms
-              -var siteId = ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)
-              -var codeClassif
-              each cl, i in classification
-                -var cla = cl["site"].toUpperCase()
-                -if(cla==siteId)
-                  -codeClassif=cl["nouvelle classe"]
-                  -break
-              tr
-                td(style="color:red")  #{ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)}
-                td  huawei
-                td  #{ag["cleared on (nt)"]}
-                td  #{codeClassif}
-                td  #{adresses[0][siteId[0]]}
-
-
-
-
-    if tangerDone
-      .col-5.offset-1(style="border-width:5px;border-style:groove;margin-top:20px")
-        .row
-          .col-6
-            h6  Tanger
-          .col-1
-            button.down(onclick="showalarms('tangerDown')")
-              span  cancel
-          .col-1
-            h6(style="left: 100%;")  #{nbrsitestangerHS}
-          .col-1
-            button.up(onclick="showalarms('tangerUp')")
-              span  cancel
-          .col-1
-            h6(style="left: 100%;" )  #{nbrsitestangerresolu}
-        #tangerUp(style="display:none;font-size:11px;")
-          table(style="width:100%;")
-            tr
-              th  Site
-              th  Vendor
-              th  Date de fin
-              th  Classification
-              th  Zone
-            each ag, i in tangeralarmsUp
-              -var siteId = ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)
-              -var codeClassif
-              each cl, i in classification
-                -var cla = cl["site"].toUpperCase()
-                -if(cla==siteId)
-                  -codeClassif=cl["nouvelle classe"]
-                  -break
+                th  Site
+                th  Date début
+                th  Date de fin
+                th  Classification
+                th  Zone
+                th  technologie
+                th  nbr d'apparence
+                th  Délais
+              each ag, i in agadirDoneUp
+                -var siteId = ag.toUpperCase()
+                -var codeClassif
+                each cl, i in classification
+                  -var cla = cl["site"].toUpperCase()
+                  -if(cla==siteId)
+                    -codeClassif=cl["nouvelle classe"]
+                    -if(codeClassif=='A')
+                      -nbrsitesAUp++
+                    -if(codeClassif=='B')
+                      -nbrsitesBUp++
+                    -if(codeClassif=='C')
+                      -nbrsitesCUp++
+                    -if(codeClassif=='D')
+                      -nbrsitesDUp++
+                    -break
                   -codeClassif= "NA"
+                tr
+                  td
+                    a(href="huawei_"+siteId style="color:success;")  #{siteId}
+                  td  #{agadiralarmsUp[siteId]["date_debut"]}
+                  td  #{agadiralarmsUp[siteId]["date_fin"]}
+                  td  #{codeClassif}
+                  -if(adresses[0][siteId] !== undefined)
+                    -var adresse = adresses[0][siteId].substring(0,15)
+                  td  #{adresse}
+                  td  #{agadiralarmsUp[ag]["technology"]}
+                  td  #{agadiralarmsUp[ag]["numberOfOccurences"]}
+                  td  #{agadiralarmsUp[ag]["delais"]} s
+          #agadirDown(style="display:none;font-size:11px;")
+            table(style="width:100%;margin: 15px 0;")
               tr
-                td(style="color:green")  #{siteId}
-                td  huawei
-                td  #{ag["cleared on (nt)"]}
-                td  #{codeClassif}
-                td  td  #{adresses[0][siteId[0]]}
-        #tangerDown(style="display:none;font-size:11px;")
-          table(style="width:100%;")
-            tr
-              th  Site
-              th  Vendor
-              th  Date de fin
-              th  Classification
-              th  Zone
-            each ag, i in tangeralarms
-              -var siteId = ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)
-              -var codeClassif
-              each cl, i in classification
-                -var cla = cl["site"].toUpperCase()
-                -if(cla==siteId)
-                  -codeClassif=cl["nouvelle classe"]
-                  -break
+                th  Site
+                th  Vendor
+                th  Date de début
+                th  Classification
+                th  Zone
+                th  technologie
+                th  Délais
+              each ag, i in agadirDone
+                -var siteId = ag.toUpperCase()
+                -var codeClassif
+                each cl, i in classification
+                  -var cla = cl["site"].toUpperCase()
+                  -if(cla==siteId)
+                    -codeClassif=cl["nouvelle classe"]
+                    -if(codeClassif=='A')
+                      -nbrsitesADown++
+                    -if(codeClassif=='B')
+                      -nbrsitesBDown++
+                    -if(codeClassif=='C')
+                      -nbrsitesCDown++
+                    -if(codeClassif=='D')
+                      -nbrsitesDDown++
+                    -break
+                  -codeClassif="NA"
+                tr
+                  td(style="color:danger")  #{siteId}
+                  td  huawei
+                  td  #{agadiralarms[ag]["date_debut"]}
+                  td  #{codeClassif}
+                  -if(adresses[0][siteId] !== undefined)
+                    -var adresse = adresses[0][siteId].substring(0,15)
+                  td  #{adresse}
+                  td  #{agadiralarms[ag]["technology"]}
+                  td  #{agadiralarms[ag]["delais"]} s
+
+
+
+
+      if casablancaDone
+        .col-5(style="border-width:5px;border-style:groove;margin-top:20px")
+          .row
+            .col-6
+              h6  Casablanca
+            .col-1
+              button.down(onclick="showalarms('casablancaDown')")
+                span  cancel
+            .col-1
+              h6(style="left: 100%;")  #{nbrsitescasablancaHS}
+            .col-1
+              button.up(onclick="showalarms('casablancaUp')")
+                span  cancel
+            .col-1
+              h6(style="left: 100%;" )  #{nbrsitescasablancaresolu}
+          #casablancaUp(style="display:none;font-size:11px;")
+            table(style="width:100%;margin: 15px 0;")
               tr
-                td(style="color:red")  #{ag["location information"].match(/[A-Z]{3}-\d{2,4}/i) || ag["mo name"].match(/[A-Z]{3}-\d{2,4}/i)}
-                td  huawei
-                td  #{ag["cleared on (nt)"]}
-                td  #{codeClassif}
-                td  #{adresses[0][siteId[0]]}
+                th  Site
+                th  Date début
+                th  Date de fin
+                th  Classification
+                th  Zone
+                th  technologie
+                th  nbr d'apparence
+                th  Délais
+              each ag, i in casablancaDoneUp
+                -var siteId = ag.toUpperCase()
+                -var codeClassif
+                each cl, i in classification
+                  -var cla = cl["site"].toUpperCase()
+                  -if(cla==siteId)
+                    -codeClassif=cl["nouvelle classe"]
+                    if(codeClassif=='A')
+                      -nbrsitesAUp++
+                    -if(codeClassif=='B')
+                      -nbrsitesBUp++
+                    -if(codeClassif=='C')
+                      -nbrsitesCUp++
+                    -if(codeClassif=='D')
+                      -nbrsitesDUp++
+                    -break
+                  -codeClassif= "NA"
+                tr
+                  td
+                    a(href="huawei_"+siteId style="color:success;")  #{siteId}
+                  td  #{casablancaalarmsUp[siteId]["date_debut"]}
+                  td  #{casablancaalarmsUp[siteId]["date_fin"]}
+                  td  #{codeClassif}
+                  -if(adresses[0][siteId] !== undefined)
+                    -var adresse = adresses[0][siteId].substring(0,15)
+                  td  #{adresse}
+                  td  #{casablancaalarmsUp[ag]["technology"]}
+                  td  #{casablancaalarmsUp[ag]["numberOfOccurences"]}
+                  td  #{casablancaalarmsUp[ag]["delais"]} s
+          #casablancaDown(style="display:none;font-size:11px;")
+            table(style="width:100%;margin: 15px 0;")
+              tr
+                th  Site
+                th  Vendor
+                th  Date de début
+                th  Classification
+                th  Zone
+                th  technologie
+                th  Délais
+              each ag, i in casablancaDone
+                -var siteId = ag.toUpperCase()
+                -var codeClassif
+                each cl, i in classification
+                  -var cla = cl["site"].toUpperCase()
+                  -if(cla==siteId)
+                    -codeClassif=cl["nouvelle classe"]
+                    -if(codeClassif=='A')
+                      -nbrsitesADown++
+                    -if(codeClassif=='B')
+                      -nbrsitesBDown++
+                    -if(codeClassif=='C')
+                      -nbrsitesCDown++
+                    -if(codeClassif=='D')
+                      -nbrsitesDDown++
+                    -break
+                  -codeClassif="NA"
+                tr
+                  td(style="color:danger")  #{siteId}
+                  td  huawei
+                  td  #{casablancaalarms[ag]["date_debut"]}
+                  td  #{codeClassif}
+                  -if(adresses[0][siteId] !== undefined)
+                    -var adresse = adresses[0][siteId].substring(0,15)
+                  td  #{adresse}
+                  td  #{casablancaalarms[ag]["technology"]}
+                  td  #{casablancaalarms[ag]["delais"]} s
+
+
+
+
+      if marrakechDone
+        .col-5.offset-1(style="border-width:5px;border-style:groove;margin-top:20px")
+          .row
+            .col-6
+              h6  Marrakech
+            .col-1
+              button.down(onclick="showalarms('marrakechDown')")
+                span  cancel
+            .col-1
+              h6(style="left: 100%;")  #{nbrsitesmarrakechHS}
+            .col-1
+              button.up(onclick="showalarms('marrakechUp')")
+                span  cancel
+            .col-1
+              h6(style="left: 100%;" )  #{nbrsitesmarrakechresolu}
+          #marrakechUp(style="display:none;font-size:11px;")
+            table(style="width:100%;margin: 15px 0;")
+              tr
+                th  Site
+                th  Date début
+                th  Date de fin
+                th  Classification
+                th  Zone
+                th  technologie
+                th  nbr d'apparence
+                th  Délais
+              each ag, i in marrakechDoneUp
+                -var siteId = ag.toUpperCase()
+                -var codeClassif
+                each cl, i in classification
+                  -var cla = cl["site"].toUpperCase()
+                  -if(cla==siteId)
+                    -codeClassif=cl["nouvelle classe"]
+                    -if(codeClassif=='A')
+                      -nbrsitesAUp++
+                    -if(codeClassif=='B')
+                      -nbrsitesBUp++
+                    -if(codeClassif=='C')
+                      -nbrsitesCUp++
+                    -if(codeClassif=='D')
+                      -nbrsitesDUp++
+                    -break
+                  -codeClassif= "NA"
+                tr
+                  td
+                    a(href="huawei_"+siteId style="color:success;")  #{siteId}
+                  td  #{marrakechalarmsUp[siteId]["date_debut"]}
+                  td  #{marrakechalarmsUp[siteId]["date_fin"]}
+                  td  #{codeClassif}
+                  -if(adresses[0][siteId] !== undefined)
+                    -var adresse = adresses[0][siteId].substring(0,15)
+                  td  #{adresse}
+                  td  #{marrakechalarmsUp[ag]["technology"]}
+                  td  #{marrakechalarmsUp[ag]["numberOfOccurences"]}
+                  td  #{marrakechalarmsUp[ag]["delais"]} s
+
+          #marrakechDown(style="display:none;font-size:11px;")
+            table(style="width:100%;margin: 15px 0;")
+              tr
+                th  Site
+                th  Vendor
+                th  Date de début
+                th  Classification
+                th  Zone
+                th  technologie
+                th  Délais
+              each ag, i in marrakechDone
+                -var siteId = ag.toUpperCase()
+                -var codeClassif
+                each cl, i in classification
+                  -var cla = cl["site"].toUpperCase()
+                  -if(cla==siteId)
+                    -codeClassif=cl["nouvelle classe"]
+                    -if(codeClassif=='A')
+                      -nbrsitesADown++
+                    -if(codeClassif=='B')
+                      -nbrsitesBDown++
+                    -if(codeClassif=='C')
+                      -nbrsitesCDown++
+                    -if(codeClassif=='D')
+                      -nbrsitesDDown++
+                    -break
+                  -codeClassif="NA"
+                tr
+                  td(style="color:danger")  #{siteId}
+                  td  huawei
+                  td  #{marrakechalarms[ag]["date_debut"]}
+                  td  #{codeClassif}
+                  -if(adresses[0][siteId] !== undefined)
+                    -var adresse = adresses[0][siteId].substring(0,15)
+                  td  #{adresse}
+                  td  #{marrakechalarms[ag]["technology"]}
+                  td  #{marrakechalarms[ag]["delais"]} s
+
+
+
+
+      if meknesDone
+        .col-5(style="border-width:5px;border-style:groove;margin-top:20px")
+          .row
+            .col-6
+              h6  Meknes
+            .col-1
+              button.down(onclick="showalarms('meknesDown')")
+                span  cancel
+            .col-1
+              h6(style="left: 100%;")  #{nbrsitesmeknesHS}
+            .col-1
+              button.up(onclick="showalarms('meknesUp')")
+                span  cancel
+            .col-1
+              h6(style="left: 100%;" )  #{nbrsitesmeknesresolu}
+          #meknesUp(style="display:none;font-size:11px;")
+            table(style="width:100%;margin: 15px 0;")
+              tr
+                th  Site
+                th  Date début
+                th  Date de fin
+                th  Classification
+                th  Zone
+                th  technologie
+                th  nbr d'apparence
+                th  Délais
+              each ag, i in meknesDoneUp
+                -var siteId = ag.toUpperCase()
+                -var codeClassif
+                each cl, i in classification
+                  -var cla = cl["site"].toUpperCase()
+                  -if(cla==siteId)
+                    -codeClassif=cl["nouvelle classe"]
+                    -if(codeClassif=='A')
+                      -nbrsitesAUp++
+                    -if(codeClassif=='B')
+                      -nbrsitesBUp++
+                    -if(codeClassif=='C')
+                      -nbrsitesCUp++
+                    -if(codeClassif=='D')
+                      -nbrsitesDUp++
+                    -break
+                  -codeClassif= "NA"
+                tr
+                  td
+                    a(href="huawei_"+siteId style="color:success;")  #{siteId}
+                  td  #{meknesalarmsUp[siteId]["date_debut"]}
+                  td  #{meknesalarmsUp[siteId]["date_fin"]}
+                  td  #{codeClassif}
+                  -if(adresses[0][siteId] !== undefined)
+                    -var adresse = adresses[0][siteId].substring(0,15)
+                  td  #{adresse}
+                  td  #{meknesalarmsUp[ag]["technology"]}
+                  td  #{meknesalarmsUp[ag]["numberOfOccurences"]}
+                  td  #{meknesalarmsUp[ag]["delais"]} s
+          #meknesDown(style="display:none;font-size:11px;")
+            table(style="width:100%;margin: 15px 0;")
+              tr
+                th  Site
+                th  Vendor
+                th  Date de début
+                th  Classification
+                th  Zone
+                th  technologie
+                th  Délais
+              each ag, i in meknesDone
+                -var siteId = ag.toUpperCase()
+                -var codeClassif
+                each cl, i in classification
+                  -var cla = cl["site"].toUpperCase()
+                  -if(cla==siteId)
+                    -codeClassif=cl["nouvelle classe"]
+                    -if(codeClassif=='A')
+                      -nbrsitesADown++
+                    -if(codeClassif=='B')
+                      -nbrsitesBDown++
+                    -if(codeClassif=='C')
+                      -nbrsitesCDown++
+                    -if(codeClassif=='D')
+                      -nbrsitesDDown++
+                    -break
+                  -codeClassif="NA"
+                tr
+                  td(style="color:danger")  #{siteId}
+                  td  huawei
+                  td  #{meknesalarms[ag]["date_debut"]}
+                  td  #{codeClassif}
+                  -if(adresses[0][siteId] !== undefined)
+                    -var adresse = adresses[0][siteId].substring(0,15)
+                  td  #{adresse}
+                  td  #{meknesalarms[ag]["technology"]}
+                  td  #{meknesalarms[ag]["delais"]} s
 
 
 
 
 
+      if oujdaDone
+        .col-5.offset-1(style="border-width:5px;border-style:groove;margin-top:20px")
+          .row
+            .col-6
+              h6  Oujda
+            .col-1
+              button.down(onclick="showalarms('oujdaDown')")
+                span  cancel
+            .col-1
+              h6(style="left: 100%;")  #{nbrsitesoujdaHS}
+            .col-1
+              button.up(onclick="showalarms('oujdaUp')")
+                span  cancel
+            .col-1
+              h6(style="left: 100%;" )  #{nbrsitesoujdaresolu}
+          #oujdaUp(style="display:none;font-size:11px;")
+            table(style="width:100%;margin: 15px 0;")
+              tr
+                th  Site
+                th  Date début
+                th  Date de fin
+                th  Classification
+                th  Zone
+                th  technologie
+                th  nbr d'apparence
+                th  Délais
+              each ag, i in oujdaDoneUp
+                -var siteId = ag.toUpperCase()
+                -var codeClassif
+                each cl, i in classification
+                  -var cla = cl["site"].toUpperCase()
+                  -if(cla==siteId)
+                    -codeClassif=cl["nouvelle classe"]
+                    -if(codeClassif=='A')
+                      -nbrsitesAUp++
+                    -if(codeClassif=='B')
+                      -nbrsitesBUp++
+                    -if(codeClassif=='C')
+                      -nbrsitesCUp++
+                    -if(codeClassif=='D')
+                      -nbrsitesDUp++
+                    -break
+                  -codeClassif= "NA"
+                tr
+                  td
+                    a(href="huawei_"+siteId style="color:success;")  #{siteId}
+                  td  #{oujdaalarmsUp[siteId]["date_debut"]}
+                  td  #{oujdaalarmsUp[siteId]["date_fin"]}
+                  td  #{codeClassif}
+                  -if(adresses[0][siteId] !== undefined)
+                    -var adresse = adresses[0][siteId].substring(0,15)
+                  td  #{adresse}
+                  td  #{oujdaalarmsUp[ag]["technology"]}
+                  td  #{oujdaalarmsUp[ag]["numberOfOccurences"]}
+                  td  #{oujdaalarmsUp[ag]["delais"]} s
+          #oujdaDown(style="display:none;font-size:11px;")
+            table(style="width:100%;margin: 15px 0;")
+              tr
+                th  Site
+                th  Vendor
+                th  Date de début
+                th  Classification
+                th  Zone
+                th  technologie
+                th  Délais
+              each ag, i in oujdaDone
+                -var siteId = ag.toUpperCase()
+                -var codeClassif
+                each cl, i in classification
+                  -var cla = cl["site"].toUpperCase()
+                  -if(cla==siteId)
+                    -codeClassif=cl["nouvelle classe"]
+                    -if(codeClassif=='A')
+                      -nbrsitesADown++
+                    -if(codeClassif=='B')
+                      -nbrsitesBDown++
+                    -if(codeClassif=='C')
+                      -nbrsitesCDown++
+                    -if(codeClassif=='D')
+                      -nbrsitesDDown++
+                    -break
+                  -codeClassif="NA"
+                tr
+                  td(style="color:danger")  #{siteId}
+                  td  huawei
+                  td  #{oujdaalarms[ag]["date_debut"]}
+                  td  #{codeClassif}
+                  -if(adresses[0][siteId] !== undefined)
+                    -var adresse = adresses[0][siteId].substring(0,15)
+                  td  #{adresse}
+                  td  #{oujdaalarms[ag]["technology"]}
+                  td  #{oujdaalarms[ag]["delais"]} s
 
-    .col-5.text-center(style="border-width:5px;border-style:groove;margin-top:20px")
-      table(style="width:100%;font-size:11px")
-        tr
-          th  Ville
-          th  Nombre de sites HS
-          th  Nombre de sites résolus
-        tr
-          td  agadir
-          td(style="color:red;")  #{nbrsitesagadirHS}
-          td(style="color:green;")  #{nbrsitesagadirresolu}
-        tr
-          td  casablanca
-          td(style="color:red;")  #{nbrsitescasablancaHS}
-          td(style="color:green;")  #{nbrsitescasablancaresolu}
-        tr
-          td  marrakech
-          td(style="color:red;")  #{nbrsitesmarrakechHS}
-          td(style="color:green;")  #{nbrsitesmarrakechresolu}
-        tr
-          td  meknes
-          td(style="color:red;")  #{nbrsitesmeknesHS}
-          td(style="color:green;")  #{nbrsitesmeknesresolu}
-        tr
-          td  Oujda
-          td(style="color:red;")  #{nbrsitesoujdaHS}
-          td(style="color:green;")  #{nbrsitesoujdaresolu}
-        tr
-          td  rabat
-          td(style="color:red;")  #{nbrsitesrabatHS}
-          td(style="color:green;")  #{nbrsitesrabatresolu}
-        tr
-          td  tanger
-          td(style="color:red;")  #{nbrsitestangerHS}
-          td(style="color:green;")  #{nbrsitestangerresolu}
-        tr
-          -var totalHS = nbrsitesagadirHS + nbrsitescasablancaHS + nbrsitesmarrakechHS + nbrsitesmeknesHS + nbrsitesoujdaHS + nbrsitesrabatHS + nbrsitestangerHS;
-          -var totalresolu = nbrsitesagadirresolu + nbrsitescasablancaresolu + nbrsitesmarrakechresolu + nbrsitesmeknesresolu + nbrsitesoujdaresolu + nbrsitesrabatresolu + nbrsitestangerresolu;
-          td  Total
-          td(style="color:red;")  #{totalHS}
-          td(style="color:green;") #{totalresolu}
+
+
+
+      if rabatDone
+        .col-5(style="border-width:5px;border-style:groove;margin-top:20px")
+          .row
+            .col-6
+              h6  Rabat
+            .col-1
+              button.down(onclick="showalarms('rabatDown')")
+                span  cancel
+            .col-1
+              h6(style="left: 100%;")  #{nbrsitesrabatHS}
+            .col-1
+              button.up(onclick="showalarms('rabatUp')")
+                span  cancel
+            .col-1
+              h6(style="left: 100%;" )  #{nbrsitesrabatresolu}
+          #rabatUp(style="display:none;font-size:11px;")
+            table(style="width:100%;margin: 15px 0;")
+              tr
+                th  Site
+                th  Date début
+                th  Date de fin
+                th  Classification
+                th  Zone
+                th  technologie
+                th  nbr d'apparence
+                th  Délais
+              each ag, i in rabatDoneUp
+                -var siteId = ag.toUpperCase()
+                -var codeClassif
+                each cl, i in classification
+                  -var cla = cl["site"].toUpperCase()
+                  -if(cla==siteId)
+                    -codeClassif=cl["nouvelle classe"]
+                    -if(codeClassif=='A')
+                      -nbrsitesAUp++
+                    -if(codeClassif=='B')
+                      -nbrsitesBUp++
+                    -if(codeClassif=='C')
+                      -nbrsitesCUp++
+                    -if(codeClassif=='D')
+                      -nbrsitesDUp++
+                    -break
+                  -codeClassif= "NA"
+                tr
+                  td
+                    a(href="huawei_"+siteId style="color:success;")  #{siteId}
+                  td  #{rabatalarmsUp[siteId]["date_debut"]}
+                  td  #{rabatalarmsUp[siteId]["date_fin"]}
+                  td  #{codeClassif}
+                  -if(adresses[0][siteId] !== undefined)
+                    -var adresse = adresses[0][siteId].substring(0,15)
+                  td  #{adresse}
+                  td  #{rabatalarmsUp[ag]["technology"]}
+                  td  #{rabatalarmsUp[ag]["numberOfOccurences"]}
+                  td  #{rabatalarmsUp[ag]["delais"]} s
+          #rabatDown(style="display:none;font-size:11px;")
+            table(style="width:100%;margin: 15px 0;")
+              tr
+                th  Site
+                th  Vendor
+                th  Date de début
+                th  Classification
+                th  Zone
+                th  technologie
+                th  Délais
+              each ag, i in rabatDone
+                -var siteId = ag.toUpperCase()
+                -var codeClassif
+                each cl, i in classification
+                  -var cla = cl["site"].toUpperCase()
+                  -if(cla==siteId)
+                    -codeClassif=cl["nouvelle classe"]
+                    -if(codeClassif=='A')
+                      -nbrsitesADown++
+                    -if(codeClassif=='B')
+                      -nbrsitesBDown++
+                    -if(codeClassif=='C')
+                      -nbrsitesCDown++
+                    -if(codeClassif=='D')
+                      -nbrsitesDDown++
+                    -break
+                  -codeClassif="NA"
+                tr
+                  td(style="color:danger")  #{siteId}
+                  td  huawei
+                  td  #{rabatalarms[ag]["date_debut"]}
+                  td  #{codeClassif}
+                  td  #{adresses[0][siteId]}
+                  td  #{rabatalarms[ag]["technology"]}
+                  td  #{rabatalarms[ag]["delais"]} s
+
+
+
+
+      if tangerDone
+        .col-5.offset-1(style="border-width:5px;border-style:groove;margin-top:20px")
+          .row
+            .col-6
+              h6  Tanger
+            .col-1
+              button.down(onclick="showalarms('tangerDown')")
+                span  cancel
+            .col-1
+              h6(style="left: 100%;")  #{nbrsitestangerHS}
+            .col-1
+              button.up(onclick="showalarms('tangerUp')")
+                span  cancel
+            .col-1
+              h6(style="left: 100%;" )  #{nbrsitestangerresolu}
+          #tangerUp(style="display:none;font-size:11px;")
+            table(style="width:100%;margin: 15px 0;")
+              tr
+                th  Site
+                th  Date début
+                th  Date de fin
+                th  Classification
+                th  Zone
+                th  technologie
+                th  nbr d'apparence
+                th  Délais
+              each ag, i in tangerDoneUp
+                -var siteId = ag.toUpperCase()
+                -var codeClassif
+                each cl, i in classification
+                  -var cla = cl["site"].toUpperCase()
+                  -if(cla==siteId)
+                    -codeClassif=cl["nouvelle classe"]
+                    -if(codeClassif=='A')
+                      -nbrsitesAUp++
+                    -if(codeClassif=='B')
+                      -nbrsitesBUp++
+                    -if(codeClassif=='C')
+                      -nbrsitesCUp++
+                    -if(codeClassif=='D')
+                      -nbrsitesDUp++
+                    -break
+                  -codeClassif= "NA"
+                tr
+                  td
+                    a(href="huawei_"+siteId style="color:success;")  #{siteId}
+                  td  #{tangeralarmsUp[siteId]["date_debut"]}
+                  td  #{tangeralarmsUp[siteId]["date_fin"]}
+                  td  #{codeClassif}
+                  -if(adresses[0][siteId] !== undefined)
+                    -var adresse = adresses[0][siteId].substring(0,15)
+                  td  #{adresse}
+                  td  #{tangeralarmsUp[ag]["technology"]}
+                  td  #{tangeralarmsUp[ag]["numberOfOccurences"]}
+                  td  #{tangeralarmsUp[ag]["delais"]} s
+          #tangerDown(style="display:none;font-size:11px;")
+            table(style="width:100%;margin: 15px 0;")
+              tr
+                th  Site
+                th  Vendor
+                th  Date de début
+                th  Classification
+                th  Zone
+                th  technologie
+                th  Délais
+              each ag, i in tangerDone
+                -var siteId = ag.toUpperCase()
+                -var codeClassif
+                each cl, i in classification
+                  -var cla = cl["site"].toUpperCase()
+                  -if(cla==siteId)
+                    -codeClassif=cl["nouvelle classe"]
+                    -if(codeClassif=='A')
+                      -nbrsitesADown++
+                    -if(codeClassif=='B')
+                      -nbrsitesBDown++
+                    -if(codeClassif=='C')
+                      -nbrsitesCDown++
+                    -if(codeClassif=='D')
+                      -nbrsitesDDown++
+                    -break
+                  -codeClassif="NA"
+                tr
+                  td(style="color:danger")  #{siteId}
+                  td  huawei
+                  td  #{tangeralarms[ag]["date_debut"]}
+                  td  #{codeClassif}
+                  -if(adresses[0][siteId] !== undefined)
+                    -var adresse = adresses[0][siteId].substring(0,15)
+                  td  #{adresse}
+                  td  #{tangeralarms[ag]["technology"]}
+                  td  #{tangeralarms[ag]["delais"]} s
+
+
+
+      if autreDone
+        .col-5(style="border-width:5px;border-style:groove;margin-top:20px")
+          .row
+            .col-6
+              h6  Autre
+            .col-1
+              button.down(onclick="showalarms('autreDown')")
+                span  cancel
+            .col-1
+              h6(style="left: 100%;")  #{nbrsitesautreHS}
+            .col-1
+              button.up(onclick="showalarms('autreUp')")
+                span  cancel
+            .col-1
+              h6(style="left: 100%;" )  #{nbrsitesautreresolu}
+          #autreUp(style="display:none;font-size:11px;")
+            table(style="width:100%;margin: 15px 0;")
+              tr
+                th  Site
+                th  Vendor
+                th  Classification
+                th  Zone
+                th  technologie
+                th  nbr d'apparence
+                th  Délais
+              each ag, i in autreDoneUp
+                -var siteId = ag.toUpperCase()
+                -var codeClassif
+                each cl, i in classification
+                  -var cla = cl["site"].toUpperCase()
+                  -if(cla==siteId)
+                    -codeClassif=cl["nouvelle classe"]
+                    -if(codeClassif=='A')
+                      -nbrsitesAUp++
+                    -if(codeClassif=='B')
+                      -nbrsitesBUp++
+                    -if(codeClassif=='C')
+                      -nbrsitesCUp++
+                    -if(codeClassif=='D')
+                      -nbrsitesDUp++
+                    -break
+                  -codeClassif= "NA"
+                tr
+                  td
+                    a(href="huawei_"+siteId style="color:success;")  #{siteId}
+                  td  huawei
+                  td  #{codeClassif}
+                  -if(adresses[0][siteId] !== undefined)
+                    -var adresse = adresses[0][siteId].substring(0,15)
+                  td  #{adresse}
+                  td  #{autrealarmsUp[ag]["technology"]}
+                  td  #{autrealarmsUp[ag]["numberOfOccurences"]}
+                  td  #{autrealarmsUp[ag]["delais"]} s
+          #autreDown(style="display:none;font-size:11px;")
+            table(style="width:100%;margin: 15px 0;")
+              tr
+                th  Site
+                th  Vendor
+                th  Date de début
+                th  Classification
+                th  Zone
+                th  technologie
+                th  Délais
+              each ag, i in autreDone
+                -var siteId = ag.toUpperCase()
+                -var codeClassif
+                each cl, i in classification
+                  -var cla = cl["site"].toUpperCase()
+                  -if(cla==siteId)
+                    -codeClassif=cl["nouvelle classe"]
+                    -if(codeClassif=='A')
+                      -nbrsitesADown++
+                    -if(codeClassif=='B')
+                      -nbrsitesBDown++
+                    -if(codeClassif=='C')
+                      -nbrsitesCDown++
+                    -if(codeClassif=='D')
+                      -nbrsitesDDown++
+                    -break
+                  -codeClassif="NA"
+                tr
+                  td(style="color:danger")  #{siteId}
+                  td  huawei
+                  td  #{autrealarms[ag]["date_debut"]}
+                  td  #{codeClassif}
+                  -if(adresses[0][siteId] !== undefined)
+                    -var adresse = adresses[0][siteId].substring(0,15)
+                  td  #{adresse}
+                  td  #{autrealarms[ag]["technology"]}
+                  td  #{autrealarms[ag]["delais"]} s
+
+
+
+
+
+    .row#states
+      .col-5.offset-1.text-center(style="border-width:5px;border-style:groove;margin-top:20px")
+        table(style="width:100%;font-size:11px;margin: 15px 0;")
+          tr
+            th  Ville
+            th(style="color:red;")  Nombre de sites HS
+            th(style="color:orange;")  Ratio des sites HS par ville
+            th(style="color:green;")  Nombre de sites résolus
+          tr
+            td  agadir
+            td(style="color:red;")  #{nbrsitesagadirHS}
+            td(style="color:orange;")  #{(""+(nbrsitesagadirHS/agadir.length)*100).substring(0,5)} %
+            td(style="color:green;")  #{nbrsitesagadirresolu}
+          tr
+            td  casablanca
+            td(style="color:red;")  #{nbrsitescasablancaHS}
+            td(style="color:orange;")  #{(""+(nbrsitescasablancaHS/casablanca.length)*100).substring(0,5)} %
+            td(style="color:green;")  #{nbrsitescasablancaresolu}
+          tr
+            td  marrakech
+            td(style="color:red;")  #{nbrsitesmarrakechHS}
+            td(style="color:orange;")  #{(""+(nbrsitesmarrakechHS/marrakech.length)*100).substring(0,5)} %
+            td(style="color:green;")  #{nbrsitesmarrakechresolu}
+          tr
+            td  meknes
+            td(style="color:red;")  #{nbrsitesmeknesHS}
+            td(style="color:orange;")  #{(""+(nbrsitesmeknesHS/meknes.length)*100).substring(0,5)} %
+            td(style="color:green;")  #{nbrsitesmeknesresolu}
+          tr
+            td  Oujda
+            td(style="color:red;")  #{nbrsitesoujdaHS}
+            td(style="color:orange;")  #{(""+(nbrsitesoujdaHS/oujda.length)*100).substring(0,5)} %
+            td(style="color:green;")  #{nbrsitesoujdaresolu}
+          tr
+            td  rabat
+            td(style="color:red;")  #{nbrsitesrabatHS}
+            td(style="color:orange;")  #{(""+(nbrsitesrabatHS/rabat.length)*100).substring(0,5)} %
+            td(style="color:green;")  #{nbrsitesrabatresolu}
+          tr
+            td  tanger
+            td(style="color:red;")  #{nbrsitestangerHS}
+            td(style="color:orange;")  #{(""+(nbrsitestangerHS/tanger.length)*100).substring(0,5)} %
+            td(style="color:green;")  #{nbrsitestangerresolu}
+          tr
+            td  Autre
+            td(style="color:red;")  #{nbrsitesautreHS}
+            td(style="color:orange;")
+            td(style="color:green;")  #{nbrsitesautreresolu}
+          tr
+            -var totalHS = nbrsitesagadirHS + nbrsitescasablancaHS + nbrsitesmarrakechHS + nbrsitesmeknesHS + nbrsitesoujdaHS + nbrsitesrabatHS + nbrsitestangerHS + nbrsitesautreHS;
+            -var totalresolu = nbrsitesagadirresolu + nbrsitescasablancaresolu + nbrsitesmarrakechresolu + nbrsitesmeknesresolu + nbrsitesoujdaresolu + nbrsitesrabatresolu + nbrsitestangerresolu + nbrsitesautreresolu;
+            td  Total
+            td(style="color:red;")  #{totalHS}
+            td(style="color:orange;")
+            td(style="color:green;") #{totalresolu}
+
+
+
+
+
+      .col-5.text-center(style="border-width:5px;border-style:groove;margin-top:20px")
+        table(style="width:100%;font-size:11px;margin: 15px 0;")
+          tr
+            th  Ville
+            th  Nombre de sites 2G
+            th  Nombre de sites 3G
+            th  Nombre de sites 4G
+          tr
+            td  Agadir
+            td  #{agadir2G}
+            td  #{agadir3G}
+            td  #{agadir4G}
+          tr
+            td  Casablanca
+            td  #{casablanca2G}
+            td  #{casablanca3G}
+            td  #{casablanca4G}
+          tr
+            td  Marrakech
+            td  #{marrakech2G}
+            td  #{marrakech3G}
+            td  #{marrakech4G}
+          tr
+            td  Meknes
+            td  #{meknes2G}
+            td  #{meknes3G}
+            td  #{meknes4G}
+          tr
+            td  Oujda
+            td  #{oujda2G}
+            td  #{oujda3G}
+            td  #{oujda4G}
+          tr
+            td  Rabat
+            td  #{rabat2G}
+            td  #{rabat3G}
+            td  #{rabat4G}
+          tr
+            td  Tanger
+            td  #{tanger2G}
+            td  #{tanger3G}
+            td  #{tanger4G}
+          tr
+            td  Autre
+            td  #{autre2G}
+            td  #{autre3G}
+            td  #{autre4G}
+          tr
+            td  Total
+            td  #{agadir2G + casablanca2G + marrakech2G + meknes2G + oujda2G + rabat2G + tanger2G + autre2G}
+            td  #{agadir3G + casablanca3G + marrakech3G + meknes3G + oujda3G + rabat3G + tanger3G + autre3G}
+            td  #{agadir4G + casablanca4G + marrakech4G + meknes4G + oujda4G + rabat4G + tanger4G + autre4G}
+            td  #{agadir2G + casablanca2G + marrakech2G + meknes2G + oujda2G + rabat2G + tanger2G + autre2G + agadir3G + casablanca3G + marrakech3G + meknes3G + oujda3G + rabat3G + tanger3G + autre3G + agadir4G + casablanca4G + marrakech4G + meknes4G + oujda4G + rabat4G + tanger4G + autre4G}
+
+
+      each cl, i in classification
+        -if(cl["nouvelle classe"]=="A")
+          -classeALength++
+        -if(cl["nouvelle classe"]=="B")
+          -classeBLength++
+        -if(cl["nouvelle classe"]=="C")
+          -classeCLength++
+        -if(cl["nouvelle classe"]=="D")
+          -classeDLength++
+
+
+      .col-5.offset-1.text-center(style="border-width:5px;border-style:groove;margin-top:20px")
+        table(style="width:100%;font-size:11px;margin: 15px 0;")
+          tr
+            th  Classe
+            th(style="color:red;")  Sites HS
+            th(style="color:orange;")  Ratio des sites HS
+            th(style="color:green;")  Sites résolus
+          tr
+            td  A
+            td(style="color:red;")  #{nbrsitesADown}
+            td(style="color:orange;")  #{(""+(nbrsitesADown/classeALength)*100).substring(0,5)} %
+            td(style="color:green;")  #{nbrsitesAUp}
+          tr
+            td  B
+            td(style="color:red;")  #{nbrsitesBDown}
+            td(style="color:orange;")  #{(""+(nbrsitesBDown/classeBLength)*100).substring(0,5)} %
+            td(style="color:green;")  #{nbrsitesBUp}
+          tr
+            td  C
+            td(style="color:red;")  #{nbrsitesCDown}
+            td(style="color:orange;")  #{(""+(nbrsitesCDown/classeCLength)*100).substring(0,5)} %
+            td(style="color:green;")  #{nbrsitesCUp}
+          tr
+            td  D
+            td(style="color:red;")  #{nbrsitesDDown}
+            td(style="color:orange;")  #{(""+(nbrsitesDDown/classeDLength)*100).substring(0,5)} %
+            td(style="color:green;")  #{nbrsitesDUp}
+          tr
+            td  NA
+            td(style="color:red;")  #{totalHS -( nbrsitesADown + nbrsitesBDown + nbrsitesCDown + nbrsitesDDown)}
+            td(style="color:orange;")
+            td(style="color:green;")  #{totalresolu - (nbrsitesAUp + nbrsitesBUp + nbrsitesCUp + nbrsitesDUp)}
+          tr
+            td  Total
+            td(style="color:red;")  #{totalHS}
+            td(style="color:orange;")
+            td(style="color:green;")  #{totalresolu}

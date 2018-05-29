@@ -39,5 +39,5 @@ app.get('*',(req,res,next)=>{
 });
 
 app.listen(port,()=>{
-  console.log("le serveur fonctionne sur le lien http:\\localhost:"+port);
+  console.log("http:\\localhost:"+port);
 })

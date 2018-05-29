@@ -4,14 +4,14 @@
   "description": "API qui permet de generer des rapports a la demande",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "port=4040 node app"
   },
   "keywords": [
     "Javascript",
     "web-serveur",
     "nodejs",
-    "developpement;",
-    "\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[Dl\u001b[C\u001b[Dl\u001b[C\u001b[C\u001b[D\u001b[Doppement",
+    "developpement",
+    "web",
     "inpt",
     "pfe",
     "stage",
@@ -23,13 +23,13 @@
   "author": "Fahd ADDI",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "*",
-    "connect-busboy": "0.0.2",
-    "express": "*",
-    "express-fileupload": "*",
-    "mongoose": "*",
+    "body-parser": "^1.18.2",
+    "connect-busboy": "^0.0.2",
+    "express": "^4.16.3",
+    "express-fileupload": "^0.4.0",
+    "mongoose": "^5.0.10",
     "multer": "^1.3.0",
-    "pug": "*",
+    "pug": "^2.0.1",
     "xls-to-json-lc": "^0.3.4",
     "xlsx-to-json-lc": "^0.5.0"
   }
