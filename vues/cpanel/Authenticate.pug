@@ -1,0 +1,11 @@
+extends ../layout
+
+block content
+  .row
+    form.form-signin(action='/cpanel/authenticate', method='post')
+      label Username
+      input.form-control(type='text', name='username' , placeholder="Username")
+      label Password
+      input.form-control(type="password", name="password" , placeholder="password xD")
+      br
+      input.btn.btn-lg.btn-default.btn-block(type='submit',name="submit" , value="Envoyer")

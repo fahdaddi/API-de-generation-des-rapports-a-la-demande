@@ -33,3 +33,8 @@ else{
   div.style.display="none"
 }
 }
+
+//
+// function test(){
+//   http.post("/authorisation").setheader(token).then(if(true){window.location('/manage/ajouter ville')} else { console.log('access not granted');} )
+// }

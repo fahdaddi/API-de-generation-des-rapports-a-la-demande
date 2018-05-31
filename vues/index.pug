@@ -1,6 +1,21 @@
 extends layout
 
 block content
+  script.
+    function HttpJwtHeader(url){
+      const token = localStorage.getItem('token')
+      $.ajax({
+        url: url,
+        headers: { 'Authorization': token },
+        success : function(data){
+          
+          console.log(document.getElementsByTagName("html")[0])
+          document.write(data);
+        }
+      });
+      /* $.get( url, { Authorization:token } ); */
+    }
+
   .bg
     div.empty250_2
       div.empty100
@@ -8,10 +23,10 @@ block content
         .row
           .col-1
           .col-4
-            a.btn.btn-outline-primary.form-control(href="/manage/ajouter_ville") Ajouter une ville
+            button.down(onclick= "HttpJwtHeader('manage/ajouter_ville')")
           .col-2
           .col-4
-            a.btn.btn-outline-primary.form-control(href="/manage/ajouter_site") Ajouter un site
+            a.btn.btn-outline-primary.form-control(onclick="HttpJwtHeader('/manage/ajouter_site')") Ajouter un site
     .container
       .row
         .col-3

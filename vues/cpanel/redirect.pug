@@ -1,0 +1,10 @@
+extends ../layout
+
+block content
+  p#token  #{token}
+  script.
+    function load() {
+      let token = document.getElementById("token").innerHTML
+      localStorage.setItem('token',token)
+    }
+    window.onload = load;

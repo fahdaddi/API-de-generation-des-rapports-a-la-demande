@@ -1,17 +1,19 @@
 const route = require('express').Router();
 const fs = require('fs');
-
+const passport = require('passport');
 
 var villedessites;
 var file = 'json/villes.json';
 var ville;
 
-
+// passport.authenticate('jwt',{session : false}),
 route.get('/ajouter_ville',(req,res,next)=>{
+
   fs.readFile('json/villes.json',(err,data)=>{
     if(err) throw err;
     ville = JSON.parse(data);
   });
+  console.log(req.user.username);
   res.render("manage/ajouter_ville",{
     villes:ville
   })
